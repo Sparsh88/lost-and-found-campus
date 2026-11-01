@@ -13,8 +13,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  ArrowLeft, CheckCircle, Package, MapPin, Calendar, Clock,
-  User, Phone, Tag, ShieldCheck, AlertTriangle
+  ArrowLeft, CheckCircle, Package, MapPin,
+  User, ShieldCheck, AlertTriangle
 } from 'lucide-react'
 import { CATEGORIES, CAMPUS_LOCATIONS, STATUS } from '@/modules/found/data'
 import { getFoundItemById, updateFoundItem } from '@/modules/found/store'
@@ -80,7 +80,7 @@ export default function EditFoundItemPage() {
     if (!form.finderName.trim()) errs.finderName = 'Finder name is required.'
     if (!form.finderContact.trim()) errs.finderContact = 'Finder contact is required.'
     if (form.status === 'Handed Over' && !form.handoverInfo.trim()) {
-      errs.handoverInfo = 'Please provide handover notes (who received it, date, verification details).'
+      errs.handoverInfo = 'Please provide handover notes (recipient name, student ID, security staff badge).'
     }
     return errs
   }
@@ -108,8 +108,8 @@ export default function EditFoundItemPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-gray-500">Loading item...</p>
+        <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-slate-500 text-sm">Loading item...</p>
       </div>
     )
   }
@@ -117,11 +117,11 @@ export default function EditFoundItemPage() {
   if (!item) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-          <AlertTriangle className="w-10 h-10 text-red-500" />
+        <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="w-8 h-8 text-rose-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Item Not Found</h2>
-        <p className="text-gray-500 mb-6">Cannot edit item that does not exist.</p>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Item Not Found</h2>
+        <p className="text-slate-500 text-sm mb-6">Cannot edit an item that does not exist.</p>
         <Link href="/found" className="btn-primary">
           <ArrowLeft className="w-4 h-4" />
           Back to Found Items
@@ -134,28 +134,28 @@ export default function EditFoundItemPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Link href={`/found/${id}`} className="inline-flex items-center gap-1.5 text-sm text-blue-700 hover:underline mb-4">
-          <ArrowLeft className="w-4 h-4" />
+        <Link href={`/found/${id}`} className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 mb-4">
+          <ArrowLeft className="w-3.5 h-3.5" />
           Back to Item Details
         </Link>
         <h1 className="section-heading text-3xl">Manage / Edit Found Item</h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          Update found item details, modify status, or record handover info.
+        <p className="text-slate-500 mt-1 text-sm">
+          Update found item details, modify status, or record handover notes.
         </p>
       </div>
 
       {updatedSuccess ? (
-        <div className="card p-8 text-center bg-green-50 border border-green-200">
-          <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-green-900 mb-1">Changes Saved Successfully!</h2>
-          <p className="text-green-700 text-sm">Redirecting back to item details page...</p>
+        <div className="card p-8 text-center bg-emerald-50 border border-emerald-200">
+          <CheckCircle className="w-12 h-12 text-emerald-600 mx-auto mb-3" />
+          <h2 className="text-lg font-bold text-emerald-900 mb-1">Changes Saved Successfully!</h2>
+          <p className="text-emerald-700 text-xs">Redirecting back to item details...</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           {/* Status & Handover Control */}
-          <div className="card p-6 space-y-4 border-2 border-blue-100 bg-blue-50/30">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2 text-base border-b pb-3">
-              <ShieldCheck className="w-5 h-5 text-blue-600" />
+          <div className="card p-6 space-y-4 border border-emerald-200/80 bg-emerald-50/20">
+            <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-emerald-100 pb-3">
+              <ShieldCheck className="w-4 h-4 text-emerald-700" />
               Item Status &amp; Handover Management
             </h2>
 
@@ -168,7 +168,7 @@ export default function EditFoundItemPage() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="form-input bg-white font-semibold text-gray-800"
+                className="form-input bg-white font-semibold text-slate-800"
               >
                 <option value={STATUS.PENDING}>Pending (Awaiting Claim)</option>
                 <option value={STATUS.CLAIMED}>Claimed (Claim Under Review)</option>
@@ -180,7 +180,7 @@ export default function EditFoundItemPage() {
             {form.status === 'Handed Over' && (
               <div className="space-y-2 pt-2">
                 <label className="form-label" htmlFor="handoverInfo">
-                  Handover Information <span className="text-red-500">*</span>
+                  Handover Information <span className="text-rose-500">*</span>
                 </label>
                 <textarea
                   id="handoverInfo"
@@ -188,18 +188,18 @@ export default function EditFoundItemPage() {
                   rows={3}
                   value={form.handoverInfo}
                   onChange={handleChange}
-                  placeholder="Record handover details: recipient name, roll number, student ID, security staff name, date/time..."
-                  className={`form-input bg-white resize-none ${errors.handoverInfo ? 'border-red-400 focus:ring-red-400' : ''}`}
+                  placeholder="Record handover details: recipient name, student ID, verification date, security officer name..."
+                  className={`form-input bg-white resize-none ${errors.handoverInfo ? 'border-rose-400 focus:ring-rose-400' : ''}`}
                 />
-                {errors.handoverInfo && <p className="text-red-500 text-xs">{errors.handoverInfo}</p>}
+                {errors.handoverInfo && <p className="text-rose-500 text-xs">{errors.handoverInfo}</p>}
               </div>
             )}
           </div>
 
           {/* Item Basic Information */}
           <div className="card p-6 space-y-4">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2 text-base border-b pb-3">
-              <Package className="w-5 h-5 text-blue-600" />
+            <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-slate-100 pb-3">
+              <Package className="w-4 h-4 text-emerald-600" />
               Item Details
             </h2>
 
@@ -211,9 +211,9 @@ export default function EditFoundItemPage() {
                 type="text"
                 value={form.itemName}
                 onChange={handleChange}
-                className={`form-input ${errors.itemName ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.itemName ? 'border-rose-400' : ''}`}
               />
-              {errors.itemName && <p className="text-red-500 text-xs mt-1">{errors.itemName}</p>}
+              {errors.itemName && <p className="text-rose-500 text-xs mt-1">{errors.itemName}</p>}
             </div>
 
             <div>
@@ -223,7 +223,7 @@ export default function EditFoundItemPage() {
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className={`form-input ${errors.category ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.category ? 'border-rose-400' : ''}`}
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -239,16 +239,16 @@ export default function EditFoundItemPage() {
                 rows={4}
                 value={form.description}
                 onChange={handleChange}
-                className={`form-input resize-none ${errors.description ? 'border-red-400' : ''}`}
+                className={`form-input resize-none ${errors.description ? 'border-rose-400' : ''}`}
               />
-              {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+              {errors.description && <p className="text-rose-500 text-xs mt-1">{errors.description}</p>}
             </div>
           </div>
 
           {/* Location & Time */}
           <div className="card p-6 space-y-4">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2 text-base border-b pb-3">
-              <MapPin className="w-5 h-5 text-blue-600" />
+            <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-slate-100 pb-3">
+              <MapPin className="w-4 h-4 text-emerald-600" />
               Location &amp; Date
             </h2>
 
@@ -261,7 +261,7 @@ export default function EditFoundItemPage() {
                 list="campus-locations-edit"
                 value={form.location}
                 onChange={handleChange}
-                className={`form-input ${errors.location ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.location ? 'border-rose-400' : ''}`}
               />
               <datalist id="campus-locations-edit">
                 {CAMPUS_LOCATIONS.map((loc) => (
@@ -298,8 +298,8 @@ export default function EditFoundItemPage() {
 
           {/* Finder Details */}
           <div className="card p-6 space-y-4">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2 text-base border-b pb-3">
-              <User className="w-5 h-5 text-blue-600" />
+            <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-slate-100 pb-3">
+              <User className="w-4 h-4 text-emerald-600" />
               Finder Information
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -333,11 +333,11 @@ export default function EditFoundItemPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary flex-1 justify-center py-3 text-base"
+              className="btn-primary flex-1 justify-center py-3 text-sm"
             >
               {submitting ? 'Saving Changes...' : 'Save & Update Item'}
             </button>
-            <Link href={`/found/${id}`} className="btn-secondary flex-1 justify-center py-3 text-base text-center">
+            <Link href={`/found/${id}`} className="btn-secondary flex-1 justify-center py-3 text-sm text-center">
               Cancel
             </Link>
           </div>
@@ -346,4 +346,3 @@ export default function EditFoundItemPage() {
     </div>
   )
 }
-

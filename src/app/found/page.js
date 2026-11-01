@@ -4,7 +4,7 @@
  * app/found/page.js  –  Module 2: Found Items Listing
  * ─────────────────────────────────────────────────────────────────
  * Displays all registered found items with:
- *  • Search bar (name + description)
+ *  • Search bar (name + description + location)
  *  • Category filter pills
  *  • Status filter dropdown
  *  • Responsive card grid
@@ -65,7 +65,7 @@ export default function FoundItemsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="section-heading text-3xl">Found Items</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} found
             {hasActiveFilters ? ' (filtered)' : ` · ${MOCK_FOUND_ITEMS.length} total`}
           </p>
@@ -80,18 +80,18 @@ export default function FoundItemsPage() {
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name, description, or location…"
-            className="form-input pl-9"
+            className="form-input pl-10"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
               <X className="w-4 h-4" />
             </button>
@@ -100,11 +100,11 @@ export default function FoundItemsPage() {
 
         {/* Status Dropdown */}
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="form-input pl-9 pr-8 appearance-none cursor-pointer min-w-[160px]"
+            className="form-input pl-10 pr-8 appearance-none cursor-pointer min-w-[160px]"
           >
             {STATUS_OPTIONS.map((s) => (
               <option key={s} value={s}>{s === 'All' ? 'All Statuses' : s}</option>
@@ -119,10 +119,10 @@ export default function FoundItemsPage() {
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
               selectedCategory === cat
-                ? 'bg-blue-700 text-white border-blue-700 shadow-md'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-700'
+                ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
             }`}
           >
             {cat}
@@ -132,7 +132,7 @@ export default function FoundItemsPage() {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="px-3.5 py-1.5 rounded-full text-sm font-medium text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 flex items-center gap-1 transition-all"
+            className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-rose-600 border border-rose-200 bg-rose-50 hover:bg-rose-100 flex items-center gap-1 transition-all"
           >
             <X className="w-3.5 h-3.5" />
             Clear Filters
@@ -149,14 +149,14 @@ export default function FoundItemsPage() {
         </div>
       ) : (
         /* ─── Empty State ─── */
-        <div className="text-center py-20">
-          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <Package className="w-10 h-10 text-gray-400" />
+        <div className="text-center py-20 bg-white rounded-xl border border-slate-200/80 p-8">
+          <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No items found</h3>
-          <p className="text-gray-400 text-sm mb-6">
+          <h3 className="text-base font-bold text-slate-800 mb-1">No items found</h3>
+          <p className="text-slate-400 text-xs mb-6 max-w-sm mx-auto">
             {hasActiveFilters
-              ? 'Try adjusting your search query or filters.'
+              ? 'Try adjusting your search query or filters to find what you are looking for.'
               : 'No found items have been registered yet.'}
           </p>
           {hasActiveFilters ? (
@@ -174,4 +174,3 @@ export default function FoundItemsPage() {
     </div>
   )
 }
-

@@ -31,16 +31,16 @@ export default function DashboardPage() {
     .slice(0, 5)
 
   const statCards = [
-    { label: 'Total Found Items', value: stats.total,      icon: Package,        color: 'bg-blue-50 text-blue-700', border: 'border-blue-200' },
-    { label: 'Pending',           value: stats.pending,    icon: Clock,          color: 'bg-yellow-50 text-yellow-700', border: 'border-yellow-200' },
-    { label: 'Claimed',           value: stats.claimed,    icon: ClipboardCheck, color: 'bg-indigo-50 text-indigo-700', border: 'border-indigo-200' },
-    { label: 'Handed Over',       value: stats.handedOver, icon: CheckCircle,    color: 'bg-green-50 text-green-700', border: 'border-green-200' },
+    { label: 'Total Found Items', value: stats.total,      icon: Package,        color: 'bg-slate-100 text-slate-800', border: 'border-slate-200' },
+    { label: 'Pending Claims',    value: stats.pending,    icon: Clock,          color: 'bg-amber-50 text-amber-800', border: 'border-amber-200' },
+    { label: 'In Verification',   value: stats.claimed,    icon: ClipboardCheck, color: 'bg-indigo-50 text-indigo-800', border: 'border-indigo-200' },
+    { label: 'Returned to Owner', value: stats.handedOver, icon: CheckCircle,    color: 'bg-emerald-50 text-emerald-800', border: 'border-emerald-200' },
   ]
 
   const modules = [
-    { title: 'Module 1 – Lost Item Service',          description: 'Report and search for lost items.',                href: '/lost',   owner: 'Teammate 1', color: 'bg-red-50 text-red-700',   icon: BookOpen },
-    { title: 'Module 2 – Found Item Service',         description: 'Register and browse found items.',                href: '/found',  owner: 'You (Me)',    color: 'bg-blue-50 text-blue-700', icon: Package },
-    { title: 'Module 3 – Claim & Verification',       description: 'Submit claims and verify ownership.',             href: '/claims', owner: 'Teammate 3', color: 'bg-green-50 text-green-700', icon: ClipboardCheck },
+    { title: 'Module 1 – Lost Item Service',          description: 'Report and search for lost items.',                href: '/lost',   owner: 'Teammate 1', color: 'bg-rose-50 text-rose-700',   icon: BookOpen },
+    { title: 'Module 2 – Found Item Service',         description: 'Register and browse found items.',                href: '/found',  owner: 'You (Me)',    color: 'bg-emerald-50 text-emerald-700', icon: Package },
+    { title: 'Module 3 – Claim & Verification',       description: 'Submit claims and verify ownership.',             href: '/claims', owner: 'Teammate 3', color: 'bg-indigo-50 text-indigo-700', icon: ClipboardCheck },
   ]
 
   return (
@@ -49,7 +49,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="section-heading text-3xl">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className="text-slate-500 text-sm mt-1">
           Overview of the Campus Lost &amp; Found system across all three modules.
         </p>
       </div>
@@ -63,8 +63,8 @@ export default function DashboardPage() {
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${s.color}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <div className="text-2xl font-extrabold text-gray-900">{s.value}</div>
-              <div className="text-sm text-gray-500 mt-0.5">{s.label}</div>
+              <div className="text-2xl font-extrabold text-slate-900">{s.value}</div>
+              <div className="text-xs text-slate-500 font-medium uppercase tracking-wider mt-0.5">{s.label}</div>
             </div>
           )
         })}
@@ -75,30 +75,30 @@ export default function DashboardPage() {
         {/* ─── Recent Found Items ─── */}
         <div className="lg:col-span-2">
           <div className="card">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-bold text-gray-800 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-blue-600" />
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide">
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
                 Recent Found Items
               </h2>
-              <Link href="/found" className="text-sm text-blue-700 hover:underline font-medium">
+              <Link href="/found" className="text-xs text-emerald-700 hover:underline font-semibold">
                 View All →
               </Link>
             </div>
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-slate-100">
               {recent.map((item) => (
-                <div key={item.id} className="p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
+                <div key={item.id} className="p-4 flex items-center gap-4 hover:bg-slate-50/60 transition-colors">
                   <img
                     src={item.imageUrl}
                     alt={item.itemName}
-                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-100"
+                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-slate-100 border border-slate-200"
                     onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=100&q=80' }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 text-sm truncate">{item.itemName}</p>
-                    <p className="text-xs text-gray-400 truncate">{item.location} · {item.foundDate}</p>
+                    <p className="font-semibold text-slate-900 text-sm truncate">{item.itemName}</p>
+                    <p className="text-xs text-slate-400 truncate">{item.location} · {item.foundDate}</p>
                   </div>
                   <StatusBadge status={item.status} />
-                  <Link href={`/found/${item.id}`} className="text-blue-600 hover:text-blue-800 flex-shrink-0">
+                  <Link href={`/found/${item.id}`} className="text-slate-400 hover:text-slate-900 flex-shrink-0">
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -109,7 +109,7 @@ export default function DashboardPage() {
 
         {/* ─── Module Status ─── */}
         <div className="space-y-4">
-          <h2 className="font-bold text-gray-800">Module Status</h2>
+          <h2 className="font-bold text-slate-900 text-sm uppercase tracking-wide">Module Status</h2>
           {modules.map((mod) => {
             const Icon = mod.icon
             return (
@@ -117,12 +117,14 @@ export default function DashboardPage() {
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${mod.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="font-semibold text-gray-800 text-sm mb-1">{mod.title}</h3>
-                <p className="text-xs text-gray-500 mb-1">{mod.description}</p>
-                <p className="text-xs text-gray-400 mb-3">Owner: <strong>{mod.owner}</strong></p>
-                <Link href={mod.href} className="text-xs text-blue-700 font-medium hover:underline flex items-center gap-1">
-                  Open Module <ArrowRight className="w-3 h-3" />
-                </Link>
+                <h3 className="font-bold text-slate-900 text-sm mb-1">{mod.title}</h3>
+                <p className="text-xs text-slate-500 mb-2 leading-relaxed">{mod.description}</p>
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <span className="text-[11px] text-slate-400">Owner: <strong className="text-slate-700">{mod.owner}</strong></span>
+                  <Link href={mod.href} className="text-xs text-emerald-700 font-semibold hover:underline flex items-center gap-1">
+                    Open <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
               </div>
             )
           })}
@@ -132,4 +134,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-

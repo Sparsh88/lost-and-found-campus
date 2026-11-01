@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Search, MapPin, Shield, ArrowRight, BookOpen, Package, ClipboardCheck } from 'lucide-react'
+import { MapPin, Shield, ArrowRight, BookOpen, Package, ClipboardCheck } from 'lucide-react'
 
 // ─── Feature cards data ─────────────────────────────────────────────────────
 const features = [
@@ -7,30 +7,30 @@ const features = [
     icon: BookOpen,
     title: 'Report Lost Item',
     description:
-      'Missing something? Report your lost item so the campus community can help you find it.',
+      'Missing something? Report your lost item so the campus community and security can help you find it.',
     href: '/lost',
-    color: 'bg-red-50 text-red-600',
-    btnColor: 'bg-red-600 hover:bg-red-700',
+    color: 'bg-rose-50 text-rose-600',
+    btnColor: 'bg-rose-600 hover:bg-rose-700',
     label: 'View Lost Items',
   },
   {
     icon: Package,
     title: 'Report Found Item',
     description:
-      'Found something on campus? Register it here so the rightful owner can reclaim it.',
+      'Found something on campus? Register it here so the rightful owner can reclaim it safely.',
     href: '/found',
-    color: 'bg-blue-50 text-blue-600',
-    btnColor: 'bg-blue-700 hover:bg-blue-800',
+    color: 'bg-emerald-50 text-emerald-600',
+    btnColor: 'bg-emerald-600 hover:bg-emerald-700',
     label: 'Browse Found Items',
   },
   {
     icon: ClipboardCheck,
     title: 'Submit a Claim',
     description:
-      'See something that belongs to you? Submit a claim and verify your ownership.',
+      'See something that belongs to you? Submit a claim with proof of ownership for verification.',
     href: '/claims',
-    color: 'bg-green-50 text-green-600',
-    btnColor: 'bg-green-600 hover:bg-green-700',
+    color: 'bg-indigo-50 text-indigo-600',
+    btnColor: 'bg-indigo-600 hover:bg-indigo-700',
     label: 'View Claims',
   },
 ]
@@ -45,10 +45,10 @@ const stats = [
 
 // ─── How it works steps ──────────────────────────────────────────────────────
 const steps = [
-  { step: '01', title: 'Report', description: 'File a lost or found item report with photos and details.' },
-  { step: '02', title: 'Match',  description: 'Our system cross-references lost and found listings.' },
-  { step: '03', title: 'Claim',  description: 'Submit a claim and verify your ownership securely.' },
-  { step: '04', title: 'Collect', description: 'Coordinate with campus security for item handover.' },
+  { step: '01', title: 'Report', description: 'File a lost or found item report with photos and location details.' },
+  { step: '02', title: 'Match',  description: 'Our campus system cross-references lost and found listings.' },
+  { step: '03', title: 'Claim',  description: 'Submit an ownership claim and verify details with security.' },
+  { step: '04', title: 'Collect', description: 'Coordinate safe handover with campus authorities.' },
 ]
 
 export default function HomePage() {
@@ -56,62 +56,61 @@ export default function HomePage() {
     <div className="flex flex-col">
 
       {/* ════════════════════ HERO ════════════════════ */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white overflow-hidden">
-        {/* decorative circles */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-indigo-300 rounded-full blur-3xl" />
+      <section className="relative bg-slate-900 text-white overflow-hidden py-20 md:py-28">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-10 left-1/4 w-80 h-80 bg-emerald-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-teal-600 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
-          {/* badge */}
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium text-blue-100 mb-6 border border-white/20">
-            <Shield className="w-4 h-4" />
-            Campus Security System
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge */}
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-xs text-xs font-semibold text-emerald-300 mb-6 border border-white/10">
+            <Shield className="w-3.5 h-3.5" />
+            Official Campus Security Service
           </span>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-            Lost Something on{' '}
-            <span className="text-yellow-400">Campus?</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight text-white leading-tight">
+            Lost Something on <span className="text-emerald-400">Campus?</span>
           </h1>
-          <p className="text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto mb-10">
-            Campus Lost &amp; Found connects students, finders, and campus security
-            to make item recovery fast, easy, and reliable.
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+            Campus Lost &amp; Found connects students, finders, and security
+            to make item recovery fast, transparent, and hassle-free.
           </p>
 
           {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
             <Link
               href="/found"
-              className="btn-primary bg-yellow-400 hover:bg-yellow-300 text-blue-900 text-base px-8 py-3"
+              className="btn-primary text-base px-7 py-3"
             >
               Browse Found Items
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/found/add"
-              className="btn-secondary border-white text-white hover:bg-white/10 text-base px-8 py-3"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-800 text-white font-semibold text-base transition-all"
             >
               Report a Found Item
             </Link>
           </div>
 
-          {/* campus badge */}
-          <div className="mt-12 flex items-center justify-center gap-2 text-blue-200 text-sm">
-            <MapPin className="w-4 h-4" />
+          {/* Campus location badge */}
+          <div className="mt-10 flex items-center justify-center gap-1.5 text-slate-400 text-xs">
+            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
             <span>Serving a 600-acre university campus</span>
           </div>
         </div>
       </section>
 
       {/* ════════════════════ STATS ════════════════════ */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="bg-white border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {stats.map((s) => (
               <div key={s.label}>
-                <div className="text-3xl md:text-4xl font-extrabold text-blue-800 mb-1">{s.value}</div>
-                <div className="text-sm text-gray-500 font-medium">{s.label}</div>
+                <div className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-1">{s.value}</div>
+                <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">{s.label}</div>
               </div>
             ))}
           </div>
@@ -119,36 +118,32 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════ FEATURE CARDS ════════════════════ */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-slate-50/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">What Would You Like To Do?</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              Our platform is built around three simple modules. Jump right in.
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">What Would You Like To Do?</h2>
+            <p className="text-slate-500 text-sm max-w-xl mx-auto">
+              Our platform connects finders, owners, and verification authorities across three distinct services.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {features.map((f) => {
               const Icon = f.icon
               return (
-                <div key={f.title} className="card card-hover flex flex-col">
-                  <div className="p-6 flex-1">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${f.color}`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{f.description}</p>
+                <div key={f.title} className="card card-hover flex flex-col p-6">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${f.color}`}>
+                    <Icon className="w-6 h-6" />
                   </div>
-                  <div className="px-6 pb-6">
-                    <Link
-                      href={f.href}
-                      className={`btn-primary w-full justify-center ${f.btnColor} text-white border-0`}
-                    >
-                      {f.label}
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{f.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-1">{f.description}</p>
+                  <Link
+                    href={f.href}
+                    className={`btn-primary justify-center ${f.btnColor}`}
+                  >
+                    {f.label}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
               )
             })}
@@ -157,27 +152,23 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════ HOW IT WORKS ════════════════════ */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white border-t border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">How It Works</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              A simple four-step process to recover your belongings.
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">How It Works</h2>
+            <p className="text-slate-500 text-sm max-w-xl mx-auto">
+              A simple four-step process to recover your lost belongings safely.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((s, i) => (
-              <div key={s.step} className="relative text-center p-6">
-                {/* connector line */}
-                {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-0.5 bg-blue-100 z-0" />
-                )}
-                <div className="relative z-10 w-14 h-14 rounded-full bg-blue-700 text-white font-extrabold text-lg flex items-center justify-center mx-auto mb-4 shadow-md">
+              <div key={s.step} className="relative text-center p-6 bg-slate-50/70 rounded-xl border border-slate-200/70">
+                <div className="w-12 h-12 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center mx-auto mb-4">
                   {s.step}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-1">{s.title}</h3>
-                <p className="text-gray-500 text-sm">{s.description}</p>
+                <h3 className="font-bold text-slate-900 mb-1 text-base">{s.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{s.description}</p>
               </div>
             ))}
           </div>
@@ -185,15 +176,15 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════ BOTTOM CTA ════════════════════ */}
-      <section className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white py-16">
+      <section className="bg-slate-900 text-white py-16 border-t border-slate-800">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Found Something on Campus?</h2>
-          <p className="text-blue-100 mb-8">
-            Be a campus hero — register found items and help reunite belongings with their owners.
+          <h2 className="text-3xl font-bold mb-3 tracking-tight">Found Something on Campus?</h2>
+          <p className="text-slate-300 text-sm mb-8 max-w-lg mx-auto">
+            Help your fellow students by registering found belongings. The campus community thanks you.
           </p>
-          <Link href="/found/add" className="btn-primary bg-yellow-400 hover:bg-yellow-300 text-blue-900 text-base px-10 py-3">
+          <Link href="/found/add" className="btn-primary text-base px-8 py-3">
             Report a Found Item
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
@@ -201,4 +192,3 @@ export default function HomePage() {
     </div>
   )
 }
-
