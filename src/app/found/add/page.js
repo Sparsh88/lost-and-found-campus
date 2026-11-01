@@ -132,7 +132,7 @@ export default function ReportFoundItemPage() {
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
-        <div className="text-center max-w-md bg-white p-8 rounded-xl border border-slate-200/80 shadow-xs">
+        <div className="text-center max-w-md bg-white p-8 rounded-xl border border-slate-200/80 shadow-sm">
           <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-emerald-600" />
           </div>
@@ -140,7 +140,7 @@ export default function ReportFoundItemPage() {
           <p className="text-slate-500 text-sm mb-6 leading-relaxed">
             Thank you for helping the campus community. Redirecting you to the Found Items list...
           </p>
-          <div className="w-6 h-6 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       </div>
     )
@@ -358,7 +358,7 @@ export default function ReportFoundItemPage() {
         <div className="card p-6 space-y-4">
           <h2 className="font-bold text-slate-900 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-slate-100 pb-3">
             <User className="w-4 h-4 text-emerald-600" />
-            Finder's Contact Information
+            Finder&apos;s Contact Information
           </h2>
 
           {/* Finder Name */}

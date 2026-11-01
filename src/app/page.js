@@ -65,7 +65,7 @@ export default function HomePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-xs text-xs font-semibold text-emerald-300 mb-6 border border-white/10">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-xs font-semibold text-emerald-300 mb-6 border border-white/10">
             <Shield className="w-3.5 h-3.5" />
             Official Campus Security Service
           </span>

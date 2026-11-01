@@ -115,7 +115,7 @@ export default function FoundItemDetailsPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-slate-500 text-sm">Loading item details…</p>
       </div>
     )
@@ -245,7 +245,7 @@ export default function FoundItemDetailsPage() {
           <div className="card p-5">
             <h2 className="font-bold text-slate-900 mb-2 flex items-center gap-2 text-sm uppercase tracking-wide">
               <User className="w-4 h-4 text-emerald-600" />
-              Finder's Information
+              Finder&apos;s Information
             </h2>
             <DetailRow icon={User}  label="Finder Name"    value={item.finderName} />
             <DetailRow icon={Phone} label="Contact"        value={item.finderContact} />
@@ -267,7 +267,7 @@ export default function FoundItemDetailsPage() {
 
       {/* ─── Delete Confirmation Modal ─── */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 animate-in">
             <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mx-auto mb-3">
               <AlertTriangle className="w-6 h-6 text-rose-600" />

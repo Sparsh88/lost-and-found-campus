@@ -121,7 +121,7 @@ export default function FoundItemsPage() {
             onClick={() => setSelectedCategory(cat)}
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
               selectedCategory === cat
-                ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                 : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
             }`}
           >
