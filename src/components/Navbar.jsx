@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, MapPin, Menu, X, Shield } from 'lucide-react'
+import { Search, MapPin, Menu, X, Shield, LogIn } from 'lucide-react'
 
 // ─── Navigation links ────────────────────────────────────────────────────────
 const navLinks = [
@@ -61,8 +61,12 @@ export default function Navbar() {
 
           {/* ─── Desktop Actions ─── */}
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/found/add" className="btn-primary text-sm py-2 px-4">
-              + Report Found Item
+            <Link
+              href="/login"
+              className="btn-primary text-sm py-2 px-5 flex items-center gap-2"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
             </Link>
           </div>
 
@@ -96,11 +100,12 @@ export default function Navbar() {
           ))}
           <div className="pt-2 border-t border-gray-100">
             <Link
-              href="/found/add"
+              href="/login"
               onClick={() => setMobileOpen(false)}
-              className="btn-primary w-full justify-center text-sm"
+              className="btn-primary w-full justify-center text-sm flex items-center gap-2"
             >
-              + Report Found Item
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
             </Link>
           </div>
         </div>
