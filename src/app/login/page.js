@@ -4,21 +4,16 @@
  * app/login/page.js
  * ─────────────────────────────────────────────────────────────────
  * Campus Authentication / Login Portal
- * Supports role-based login simulation:
- *   - Student
- *   - Faculty / Staff
- *   - Campus Security Authority
  * ─────────────────────────────────────────────────────────────────
  */
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Shield, Lock, Mail, UserCheck, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Shield, Lock, Mail, LogIn, CheckCircle2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [role, setRole] = useState('student')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,43 +50,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Role Selector */}
-        <div className="grid grid-cols-3 gap-2 p-1 bg-gray-100 rounded-xl text-xs font-semibold text-gray-600">
-          <button
-            type="button"
-            onClick={() => setRole('student')}
-            className={`py-2 rounded-lg transition-all ${
-              role === 'student'
-                ? 'bg-white text-blue-800 shadow-sm font-bold'
-                : 'hover:text-gray-900'
-            }`}
-          >
-            Student
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('staff')}
-            className={`py-2 rounded-lg transition-all ${
-              role === 'staff'
-                ? 'bg-white text-blue-800 shadow-sm font-bold'
-                : 'hover:text-gray-900'
-            }`}
-          >
-            Staff
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('security')}
-            className={`py-2 rounded-lg transition-all ${
-              role === 'security'
-                ? 'bg-white text-blue-800 shadow-sm font-bold'
-                : 'hover:text-gray-900'
-            }`}
-          >
-            Security
-          </button>
-        </div>
-
         {success ? (
           <div className="text-center py-6 space-y-3">
             <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto animate-bounce" />
@@ -112,25 +70,16 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={
-                    role === 'security'
-                      ? 'officer.badge@campus.edu.in'
-                      : 'student.id@campus.edu.in'
-                  }
+                  placeholder="your.email@campus.edu.in"
                   className="form-input pl-9"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="form-label mb-0" htmlFor="password">
-                  Password
-                </label>
-                <a href="#" className="text-xs text-blue-700 hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+              <label className="form-label" htmlFor="password">
+                Password
+              </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
@@ -148,14 +97,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full justify-center py-2.5 text-sm"
+              className="btn-primary w-full justify-center py-2.5 text-sm flex items-center gap-2"
             >
               {loading ? (
                 <span>Signing In...</span>
               ) : (
                 <>
-                  <UserCheck className="w-4 h-4" />
-                  <span>Sign In as {role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
                 </>
               )}
             </button>
@@ -174,4 +123,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
