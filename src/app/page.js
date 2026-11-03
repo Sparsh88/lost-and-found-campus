@@ -4,15 +4,15 @@ export default function HomePage() {
   return (
     <div className="space-y-12 pb-12">
       
-      <section className="bg-midnightNavy text-white py-16 sm:py-20 px-4 text-center border-b border-white/10">
+      <section className="bg-slate-200 text-charcoal py-16 sm:py-20 px-4 text-center border-b border-lightGray">
         <div className="max-w-3xl mx-auto space-y-4">
-          <span className="bg-white/10 text-slate-200 text-xs px-3 py-1 rounded-full font-medium inline-block border border-white/20">
+          <span className="bg-white/80 text-slateGray text-xs px-3 py-1 rounded-full font-semibold inline-block border border-lightGray shadow-sm">
             600-Acre Campus System
           </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-charcoal tracking-tight">
             Campus Lost &amp; Found
           </h1>
-          <p className="text-slate-300 text-base sm:text-lg">
+          <p className="text-slateGray text-base sm:text-lg">
             Easily report lost items, register found belongings, and claim your missing items with campus security.
           </p>
           <div className="flex flex-wrap gap-3 justify-center pt-2">
