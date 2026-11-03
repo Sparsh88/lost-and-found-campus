@@ -17,7 +17,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="bg-midnightNavy border-b border-white/10 sticky top-0 z-50">
+    <nav className="bg-white border-b border-lightGray sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between h-16 items-center">
           
@@ -25,7 +25,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-electricBlue text-white flex items-center justify-center font-bold text-sm shadow-sm">
               LF
             </div>
-            <span className="font-bold text-lg text-white tracking-tight">
+            <span className="font-bold text-lg text-charcoal tracking-tight">
               Campus Lost &amp; Found
             </span>
           </Link>
@@ -39,8 +39,8 @@ export default function Navbar() {
                   href={link.href}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
                     active
-                      ? 'bg-white/15 text-white'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10'
+                      ? 'bg-blue-50 text-electricBlue font-semibold'
+                      : 'text-slateGray hover:text-charcoal hover:bg-softSand'
                   }`}
                 >
                   {link.name}
@@ -60,7 +60,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-slate-300 rounded-lg hover:bg-white/10"
+            className="md:hidden p-2 text-charcoal rounded-lg hover:bg-softSand"
           >
             <span className="text-xl">☰</span>
           </button>
@@ -68,13 +68,13 @@ export default function Navbar() {
       </div>
 
       {isOpen && (
-        <div className="md:hidden border-t border-white/10 px-4 pt-2 pb-4 space-y-1 bg-midnightNavy">
+        <div className="md:hidden border-t border-lightGray px-4 pt-2 pb-4 space-y-1 bg-white">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-white/10"
+              className="block px-3 py-2 rounded-lg text-base font-medium text-charcoal hover:bg-softSand"
             >
               {link.name}
             </Link>
