@@ -30,7 +30,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gray-800 mt-8 pt-4 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} Campus Lost &amp; Found — Group Project P04
+        © {new Date().getFullYear()} Campus Lost &amp; Found
       </div>
     </footer>
   )

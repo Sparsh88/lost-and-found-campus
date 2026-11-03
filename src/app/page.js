@@ -59,7 +59,7 @@ export default function HomePage() {
           <div className="bg-white p-6 rounded-xl border-2 border-blue-500 shadow-sm flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block mb-3">
-                Module 2 (Our Service)
+                Module 2
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Found Item Service</h3>
               <p className="text-sm text-gray-600 mb-4">
