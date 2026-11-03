@@ -9,10 +9,17 @@ export default function Navbar() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
     function checkAuth() {
       setIsAdmin(localStorage.getItem('isAdmin') === 'true')
+      try {
+        const user = localStorage.getItem('currentUser')
+        setCurrentUser(user ? JSON.parse(user) : null)
+      } catch {
+        setCurrentUser(null)
+      }
     }
 
     checkAuth()
@@ -26,9 +33,11 @@ export default function Navbar() {
 
   function handleLogout() {
     localStorage.removeItem('isAdmin')
+    localStorage.removeItem('currentUser')
     localStorage.removeItem('userEmail')
     window.dispatchEvent(new Event('authChange'))
     setIsAdmin(false)
+    setCurrentUser(null)
     router.push('/login')
   }
 
@@ -37,8 +46,11 @@ export default function Navbar() {
     { name: 'Lost Items', href: '/lost' },
     { name: 'Found Items', href: '/found' },
     { name: 'Claims & Verify', href: '/claims' },
-    { name: isAdmin ? 'Admin Panel' : 'Dashboard', href: '/dashboard' },
   ]
+
+  if (isAdmin) {
+    links.push({ name: 'Admin Panel', href: '/dashboard' })
+  }
 
   return (
     <nav className="bg-white border-b border-lightGray sticky top-0 z-50">
@@ -71,13 +83,18 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-2">
-            {isAdmin ? (
-              <button
-                onClick={handleLogout}
-                className="bg-warmWhite border border-lightGray hover:bg-white text-crimsonRed text-sm font-medium px-4 py-2 rounded-lg transition duration-200 shadow-sm"
-              >
-                Logout (Admin)
-              </button>
+            {currentUser ? (
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold text-charcoal bg-softSand px-3 py-1.5 rounded-lg border border-lightGray">
+                  {isAdmin ? '🛡️ Admin' : `👤 ${currentUser.name}`}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-warmWhite border border-lightGray hover:bg-white text-crimsonRed text-xs font-medium px-3 py-1.5 rounded-lg transition shadow-sm"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <Link
                 href="/login"
@@ -109,16 +126,21 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          {isAdmin ? (
-            <button
-              onClick={() => {
-                setIsOpen(false)
-                handleLogout()
-              }}
-              className="block w-full text-center mt-3 bg-warmWhite border border-lightGray text-crimsonRed py-2 rounded-lg font-medium text-sm transition"
-            >
-              Logout (Admin)
-            </button>
+          {currentUser ? (
+            <div className="pt-2 border-t border-lightGray space-y-2">
+              <span className="block text-xs font-semibold text-charcoal bg-softSand px-3 py-1.5 rounded-lg border border-lightGray text-center">
+                {isAdmin ? '🛡️ Admin' : `👤 ${currentUser.name}`}
+              </span>
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  handleLogout()
+                }}
+                className="block w-full text-center bg-warmWhite border border-lightGray text-crimsonRed py-2 rounded-lg font-medium text-sm transition"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <Link
               href="/login"
