@@ -5,10 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node -e \"try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "node scripts/patch-next.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "mongoose": "^9.11.4",

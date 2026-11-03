@@ -56,10 +56,10 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-xl border-2 border-blue-500 shadow-sm flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block mb-3">
-                Module 2
+                Module 2 (Our Service)
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Found Item Service</h3>
               <p className="text-sm text-gray-600 mb-4">
@@ -68,9 +68,9 @@ export default function HomePage() {
             </div>
             <Link
               href="/found"
-              className="text-blue-600 font-semibold text-sm hover:underline"
+              className="bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-semibold hover:bg-blue-700"
             >
-              Go to Found Items →
+              Browse Found Items →
             </Link>
           </div>
 

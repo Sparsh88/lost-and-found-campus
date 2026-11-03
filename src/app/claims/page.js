@@ -5,18 +5,18 @@ export default function ClaimsPage() {
     <div className="max-w-2xl mx-auto px-4 py-16 text-center">
       <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm space-y-4">
         <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
-          Module 3
+          Module 3 (Teammate 3 Responsibility)
         </span>
         <h1 className="text-2xl font-bold text-gray-900">Claim &amp; Verification Service</h1>
         <p className="text-gray-600 text-sm">
-          This service allows students to submit verification claims for found items with campus security.
+          This module is being developed by Teammate 3. It will allow students to submit verification claims for found items.
         </p>
         <div className="pt-2">
           <Link
             href="/found"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg"
           >
-            Go to Found Items
+            Go to Found Items (Module 2)
           </Link>
         </div>
       </div>
