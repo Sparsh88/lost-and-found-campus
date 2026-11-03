@@ -1,177 +1,121 @@
 'use client'
 
-/**
- * app/found/page.js  –  Module 2: Found Items Listing
- * ─────────────────────────────────────────────────────────────────
- * Displays all registered found items with:
- *  • Search bar (name + description)
- *  • Category filter pills
- *  • Status filter dropdown
- *  • Responsive card grid
- *  • "Report Found Item" CTA
- * ─────────────────────────────────────────────────────────────────
- */
-
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Search, Filter, Plus, Package, X } from 'lucide-react'
-import { MOCK_FOUND_ITEMS, CATEGORIES } from '@/modules/found/data'
+import { CATEGORIES } from '@/modules/found/data'
+import { getFoundItems } from '@/modules/found/store'
 import FoundItemCard from '@/components/ui/FoundItemCard'
 
-// ─── Status filter options ────────────────────────────────────────
-const STATUS_OPTIONS = ['All', 'Pending', 'Claimed', 'Verified', 'Handed Over']
+export default function FoundPage() {
+  const [items] = useState(getFoundItems())
+  const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('All')
+  const [status, setStatus] = useState('All')
 
-export default function FoundItemsPage() {
-  // ── State ──────────────────────────────────────────────────────
-  const [searchQuery,      setSearchQuery]      = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [selectedStatus,   setSelectedStatus]   = useState('All')
+  // Filter items based on search, category and status
+  const filteredItems = items.filter((item) => {
+    const matchesSearch =
+      item.itemName.toLowerCase().includes(search.toLowerCase()) ||
+      item.location.toLowerCase().includes(search.toLowerCase()) ||
+      item.description.toLowerCase().includes(search.toLowerCase())
 
-  // ── Filtered items ─────────────────────────────────────────────
-  const filteredItems = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim()
-    return MOCK_FOUND_ITEMS.filter((item) => {
-      const matchesSearch =
-        !q ||
-        item.itemName.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.location.toLowerCase().includes(q)
+    const matchesCategory = category === 'All' || item.category === category
+    const matchesStatus = status === 'All' || item.status === status
 
-      const matchesCategory =
-        selectedCategory === 'All' || item.category === selectedCategory
+    return matchesSearch && matchesCategory && matchesStatus
+  })
 
-      const matchesStatus =
-        selectedStatus === 'All' || item.status === selectedStatus
-
-      return matchesSearch && matchesCategory && matchesStatus
-    })
-  }, [searchQuery, selectedCategory, selectedStatus])
-
-  // ── Clear filters ──────────────────────────────────────────────
-  const hasActiveFilters =
-    searchQuery || selectedCategory !== 'All' || selectedStatus !== 'All'
-
-  function clearFilters() {
-    setSearchQuery('')
-    setSelectedCategory('All')
-    setSelectedStatus('All')
-  }
-
-  // ── Render ─────────────────────────────────────────────────────
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-      {/* ─── Page Header ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      
+      {/* Title & Add Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="section-heading text-3xl">Found Items</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Found Items</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} found
-            {hasActiveFilters ? ' (filtered)' : ` · ${MOCK_FOUND_ITEMS.length} total`}
+            Browse all registered items found across campus ({filteredItems.length} items)
           </p>
         </div>
-        <Link href="/found/add" className="btn-primary self-start sm:self-auto">
-          <Plus className="w-4 h-4" />
-          Report Found Item
+
+        <Link
+          href="/found/add"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition self-start sm:self-auto"
+        >
+          + Report Found Item
         </Link>
       </div>
 
-      {/* ─── Search + Status Filter Row ─── */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-5">
-        {/* Search Input */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      {/* Search and Filters */}
+      <div className="bg-white p-4 rounded-xl border border-gray-200 mb-6 space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, description, or location…"
-            className="form-input pl-9"
+            placeholder="Search by item name, location or description..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
 
-        {/* Status Dropdown */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="form-input pl-9 pr-8 appearance-none cursor-pointer min-w-[160px]"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
           >
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>{s === 'All' ? 'All Statuses' : s}</option>
-            ))}
+            <option value="All">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Claimed">Claimed</option>
+            <option value="Verified">Verified</option>
+            <option value="Handed Over">Handed Over</option>
           </select>
         </div>
-      </div>
 
-      {/* ─── Category Filter Pills ─── */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {['All', ...CATEGORIES].map((cat) => (
+        {/* Category Pills */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
           <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border ${
-              selectedCategory === cat
-                ? 'bg-blue-700 text-white border-blue-700 shadow-md'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-700'
+            onClick={() => setCategory('All')}
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              category === 'All'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            {cat}
+            All
           </button>
-        ))}
-
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="px-3.5 py-1.5 rounded-full text-sm font-medium text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 flex items-center gap-1 transition-all"
-          >
-            <X className="w-3.5 h-3.5" />
-            Clear Filters
-          </button>
-        )}
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                category === cat
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* ─── Results Grid ─── */}
+      {/* Grid of Items */}
       {filteredItems.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <FoundItemCard key={item.id} item={item} />
           ))}
         </div>
       ) : (
-        /* ─── Empty State ─── */
-        <div className="text-center py-20">
-          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <Package className="w-10 h-10 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No items found</h3>
-          <p className="text-gray-400 text-sm mb-6">
-            {hasActiveFilters
-              ? 'Try adjusting your search query or filters.'
-              : 'No found items have been registered yet.'}
-          </p>
-          {hasActiveFilters ? (
-            <button onClick={clearFilters} className="btn-secondary">
-              Clear all filters
-            </button>
-          ) : (
-            <Link href="/found/add" className="btn-primary">
-              <Plus className="w-4 h-4" />
-              Report the First Found Item
-            </Link>
-          )}
+        <div className="text-center py-16 bg-white rounded-xl border border-gray-200 p-6">
+          <p className="text-gray-500 text-base mb-3">No found items match your search.</p>
+          <button
+            onClick={() => { setSearch(''); setCategory('All'); setStatus('All'); }}
+            className="text-blue-600 hover:underline text-sm font-medium"
+          >
+            Clear all filters
+          </button>
         </div>
       )}
+
     </div>
   )
 }
-

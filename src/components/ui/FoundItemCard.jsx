@@ -1,75 +1,42 @@
-/**
- * components/ui/FoundItemCard.jsx
- * Card component for displaying a single found item in the listing grid.
- */
 import Link from 'next/link'
-import { MapPin, Clock, User, ArrowRight } from 'lucide-react'
 import StatusBadge from './StatusBadge'
 import CategoryBadge from './CategoryBadge'
 
-/**
- * @param {{ item: import('@/modules/found/data').FoundItem }} props
- */
 export default function FoundItemCard({ item }) {
-  // Format date nicely
-  const formattedDate = new Date(item.foundDate + 'T00:00:00').toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-
   return (
-    <div className="card card-hover flex flex-col group">
-      {/* ─── Image ─── */}
-      <div className="relative h-48 bg-gray-100 overflow-hidden">
-        <img
-          src={item.imageUrl || 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=400&q=80'}
-          alt={item.itemName}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => {
-            e.target.src = 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=400&q=80'
-          }}
-        />
-        {/* overlay badges */}
-        <div className="absolute top-2 left-2">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
+      <img
+        src={item.imageUrl || 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=400&q=80'}
+        alt={item.itemName}
+        className="w-full h-44 object-cover"
+      />
+
+      <div className="p-4">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <CategoryBadge category={item.category} />
-        </div>
-        <div className="absolute top-2 right-2">
           <StatusBadge status={item.status} />
         </div>
-      </div>
 
-      {/* ─── Body ─── */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-gray-900 text-base mb-1 line-clamp-1">{item.itemName}</h3>
-        <p className="text-gray-500 text-sm line-clamp-2 mb-3 leading-relaxed">{item.description}</p>
+        <h3 className="font-semibold text-gray-900 text-base mb-1 truncate">
+          {item.itemName}
+        </h3>
 
-        {/* Meta info */}
-        <div className="space-y-1.5 mt-auto">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <MapPin className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-            <span className="truncate">{item.location}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <Clock className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-            <span>{formattedDate} at {item.foundTime}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <User className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-            <span className="truncate">Found by: {item.finderName}</span>
-          </div>
+        <p className="text-gray-500 text-sm line-clamp-2 mb-3">
+          {item.description}
+        </p>
+
+        <div className="text-xs text-gray-500 space-y-1 mb-4">
+          <p>📍 {item.location}</p>
+          <p>📅 {item.foundDate} at {item.foundTime}</p>
         </div>
 
-        {/* View Details button */}
         <Link
           href={`/found/${item.id}`}
-          className="mt-4 btn-primary w-full justify-center text-xs py-2 px-3"
+          className="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition"
         >
           View Details
-          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </div>
   )
 }
-

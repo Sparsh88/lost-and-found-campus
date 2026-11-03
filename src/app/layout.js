@@ -4,31 +4,19 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Campus Lost & Found',
-  description:
-    'A campus-wide Lost and Found Management System connecting students, finders, and security authorities.',
-  keywords: 'campus, lost, found, items, university, students',
+  description: 'Lost and Found Management System for 600-Acre Campus',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className="bg-gray-50 min-h-screen flex flex-col antialiased">
-        {/* ─── Navigation Bar ─── */}
+      <body className="min-h-screen flex flex-col">
         <Navbar />
-
-        {/* ─── Page Content ─── */}
         <main className="flex-1">
           {children}
         </main>
-
-        {/* ─── Footer ─── */}
         <Footer />
       </body>
     </html>
   )
 }
-
