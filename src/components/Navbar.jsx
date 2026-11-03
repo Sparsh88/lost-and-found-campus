@@ -17,15 +17,15 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-midnightNavy border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between h-16 items-center">
           
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-blue-700 text-white flex items-center justify-center font-bold text-sm">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-electricBlue text-white flex items-center justify-center font-bold text-sm shadow-sm">
               LF
             </div>
-            <span className="font-bold text-lg text-gray-900">
+            <span className="font-bold text-lg text-white tracking-tight">
               Campus Lost &amp; Found
             </span>
           </Link>
@@ -37,10 +37,10 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
                     active
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-white/15 text-white'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   {link.name}
@@ -52,7 +52,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center">
             <Link
               href="/login"
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition duration-200 shadow-sm"
             >
               Login
             </Link>
@@ -60,7 +60,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-600 rounded-md hover:bg-gray-100"
+            className="md:hidden p-2 text-slate-300 rounded-lg hover:bg-white/10"
           >
             <span className="text-xl">☰</span>
           </button>
@@ -68,13 +68,13 @@ export default function Navbar() {
       </div>
 
       {isOpen && (
-        <div className="md:hidden border-t border-gray-200 px-4 pt-2 pb-4 space-y-1 bg-white">
+        <div className="md:hidden border-t border-white/10 px-4 pt-2 pb-4 space-y-1 bg-midnightNavy">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100"
+              className="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-white/10"
             >
               {link.name}
             </Link>
@@ -82,7 +82,7 @@ export default function Navbar() {
           <Link
             href="/login"
             onClick={() => setIsOpen(false)}
-            className="block text-center mt-3 bg-blue-600 text-white py-2 rounded-md font-medium text-sm"
+            className="block text-center mt-3 bg-electricBlue hover:bg-electricBlue-hover text-white py-2 rounded-lg font-medium text-sm transition"
           >
             Login
           </Link>

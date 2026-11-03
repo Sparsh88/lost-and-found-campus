@@ -17,18 +17,18 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div className="max-w-md w-full bg-softSand p-8 rounded-2xl border border-lightGray shadow-sm space-y-6">
         
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Campus Login</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-charcoal">Campus Login</h1>
+          <p className="text-sm text-slateGray mt-1">
             Sign in to access your campus lost and found account
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Campus Email or ID
             </label>
             <input
@@ -37,12 +37,12 @@ export default function LoginPage() {
               placeholder="student@campus.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Password
             </label>
             <input
@@ -51,20 +51,20 @@ export default function LoginPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg text-sm transition"
+            className="w-full bg-electricBlue hover:bg-electricBlue-hover text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
           >
             Sign In
           </button>
         </form>
 
-        <div className="text-center text-xs text-gray-500">
-          <Link href="/" className="text-blue-600 hover:underline">
+        <div className="text-center text-xs text-slateGray">
+          <Link href="/" className="text-brightAzure hover:text-electricBlue hover:underline font-medium">
             ← Return to Home Page
           </Link>
         </div>

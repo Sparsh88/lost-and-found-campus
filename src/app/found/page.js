@@ -29,34 +29,34 @@ export default function FoundPage() {
       
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Found Items</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-charcoal">Found Items</h1>
+          <p className="text-slateGray text-sm mt-1">
             Browse all registered items found across campus ({filteredItems.length} items)
           </p>
         </div>
 
         <Link
           href="/found/add"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition self-start sm:self-auto"
+          className="bg-electricBlue hover:bg-electricBlue-hover text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-sm self-start sm:self-auto"
         >
           + Report Found Item
         </Link>
       </div>
 
-      <div className="bg-white p-4 rounded-xl border border-gray-200 mb-6 space-y-3">
+      <div className="bg-softSand p-4 rounded-xl border border-lightGray shadow-sm mb-6 space-y-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             placeholder="Search by item name, location or description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/70 focus:outline-none focus:ring-2 focus:ring-skyBlue focus:border-skyBlue"
           />
 
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+            className="bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-skyBlue focus:border-skyBlue"
           >
             <option value="All">All Statuses</option>
             <option value="Pending">Pending</option>
@@ -69,10 +69,10 @@ export default function FoundPage() {
         <div className="flex flex-wrap gap-1.5 pt-1">
           <button
             onClick={() => setCategory('All')}
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
               category === 'All'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-electricBlue text-white shadow-sm'
+                : 'bg-warmWhite text-charcoal border border-lightGray hover:bg-white'
             }`}
           >
             All
@@ -81,10 +81,10 @@ export default function FoundPage() {
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`px-3 py-1 rounded-full text-xs font-medium ${
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
                 category === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-electricBlue text-white shadow-sm'
+                  : 'bg-warmWhite text-charcoal border border-lightGray hover:bg-white'
               }`}
             >
               {cat}
@@ -100,11 +100,11 @@ export default function FoundPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200 p-6">
-          <p className="text-gray-500 text-base mb-3">No found items match your search.</p>
+        <div className="text-center py-16 bg-softSand rounded-xl border border-lightGray p-6 shadow-sm">
+          <p className="text-slateGray text-base mb-3">No found items match your search.</p>
           <button
             onClick={() => { setSearch(''); setCategory('All'); setStatus('All'); }}
-            className="text-blue-600 hover:underline text-sm font-medium"
+            className="text-brightAzure hover:text-electricBlue hover:underline text-sm font-medium"
           >
             Clear all filters
           </button>

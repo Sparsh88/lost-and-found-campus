@@ -14,11 +14,11 @@ export default function ItemDetailsPage() {
   if (!item) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-xl font-bold text-gray-800 mb-2">Item Not Found</h2>
-        <p className="text-gray-500 text-sm mb-4">
+        <h2 className="text-xl font-bold text-charcoal mb-2">Item Not Found</h2>
+        <p className="text-slateGray text-sm mb-4">
           This item does not exist or may have been deleted.
         </p>
-        <Link href="/found" className="text-blue-600 hover:underline text-sm">
+        <Link href="/found" className="text-brightAzure hover:text-electricBlue hover:underline text-sm font-medium">
           ← Back to Found Items
         </Link>
       </div>
@@ -36,11 +36,11 @@ export default function ItemDetailsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       
-      <Link href="/found" className="text-blue-600 text-sm hover:underline mb-4 inline-block">
+      <Link href="/found" className="text-brightAzure hover:text-electricBlue text-sm hover:underline mb-4 inline-block font-medium">
         ← Back to Found Items
       </Link>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="bg-softSand rounded-xl border border-lightGray overflow-hidden shadow-sm">
         
         <img
           src={item.imageUrl || 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=600&q=80'}
@@ -55,55 +55,55 @@ export default function ItemDetailsPage() {
               <CategoryBadge category={item.category} />
               <StatusBadge status={item.status} />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">{item.itemName}</h1>
-            <p className="text-xs text-gray-400 mt-0.5">Item ID: #{item.id}</p>
+            <h1 className="text-2xl font-bold text-charcoal">{item.itemName}</h1>
+            <p className="text-xs text-slateGray mt-0.5">Item ID: #{item.id}</p>
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold text-gray-700 mb-1">Description</h2>
-            <p className="text-gray-600 text-sm whitespace-pre-wrap">{item.description}</p>
+            <h2 className="text-sm font-semibold text-charcoal mb-1">Description</h2>
+            <p className="text-slateGray text-sm whitespace-pre-wrap">{item.description}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-warmWhite border border-lightGray p-4 rounded-lg text-sm">
             <div>
-              <span className="text-gray-500 block text-xs">Found Location</span>
-              <span className="font-medium text-gray-800">📍 {item.location}</span>
+              <span className="text-slateGray block text-xs">Found Location</span>
+              <span className="font-semibold text-charcoal">📍 {item.location}</span>
             </div>
             <div>
-              <span className="text-gray-500 block text-xs">Date &amp; Time</span>
-              <span className="font-medium text-gray-800">📅 {item.foundDate} at {item.foundTime}</span>
+              <span className="text-slateGray block text-xs">Date &amp; Time</span>
+              <span className="font-semibold text-charcoal">📅 {item.foundDate} at {item.foundTime}</span>
             </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-3 text-sm">
-            <h2 className="text-sm font-semibold text-gray-700 mb-1">Finder Details</h2>
-            <p className="text-gray-600">Name: <span className="font-medium text-gray-800">{item.finderName}</span></p>
-            <p className="text-gray-600">Contact: <span className="font-medium text-gray-800">{item.finderContact}</span></p>
+          <div className="border-t border-lightGray pt-3 text-sm">
+            <h2 className="text-sm font-semibold text-charcoal mb-1">Finder Details</h2>
+            <p className="text-slateGray">Name: <span className="font-semibold text-charcoal">{item.finderName}</span></p>
+            <p className="text-slateGray">Contact: <span className="font-semibold text-charcoal">{item.finderContact}</span></p>
           </div>
 
           {item.handoverInfo && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm">
-              <h2 className="font-semibold text-green-900 mb-1">Handover Information</h2>
-              <p className="text-green-800">{item.handoverInfo}</p>
+            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm">
+              <h2 className="font-semibold text-forestGreen mb-1">Handover Information</h2>
+              <p className="text-forestGreen">{item.handoverInfo}</p>
             </div>
           )}
 
-          <div className="border-t border-gray-100 pt-4 flex flex-wrap gap-3">
+          <div className="border-t border-lightGray pt-4 flex flex-wrap gap-3">
             <Link
               href={`/found/edit/${item.id}`}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
             >
               Edit / Update Status
             </Link>
             <button
               onClick={handleDelete}
-              className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-sm px-4 py-2 rounded-lg transition"
+              className="bg-red-50 hover:bg-red-100 text-crimsonRed border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition"
             >
               Delete Item
             </button>
             <Link
               href="/claims"
-              className="border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm px-4 py-2 rounded-lg ml-auto"
+              className="bg-warmWhite border border-lightGray hover:bg-white text-midnightNavy text-sm font-medium px-4 py-2 rounded-lg ml-auto transition"
             >
               Claim this Item
             </Link>

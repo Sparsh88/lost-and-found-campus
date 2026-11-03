@@ -2,8 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-warm-white: #F7F6F2;
+  --surface-sand: #F1EDE6;
+  --nav-navy: #0B1F3A;
+  --primary-blue: #0878E8;
+  --link-azure: #0077D9;
+  --text-charcoal: #252A30;
+  --text-slate: #586273;
+  --border-gray: #D9DDE3;
+  --focus-sky: #3B82F6;
+  --success-green: #168344;
+  --error-red: #DC2626;
+  --warning-amber: #ED9708;
+}
+
 body {
-  background-color: #f9fafb;
-  color: #111827;
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #F7F6F2;
+  color: #252A30;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }

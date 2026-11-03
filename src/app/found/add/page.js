@@ -43,19 +43,19 @@ export default function AddFoundItemPage() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       
       <div className="mb-6">
-        <Link href="/found" className="text-blue-600 text-sm hover:underline">
+        <Link href="/found" className="text-brightAzure hover:text-electricBlue text-sm hover:underline">
           ← Back to Found Items
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-2">Report a Found Item</h1>
-        <p className="text-gray-500 text-sm">
+        <h1 className="text-2xl font-bold text-charcoal mt-2">Report a Found Item</h1>
+        <p className="text-slateGray text-sm">
           Register an item you found on campus so the owner can recover it.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <form onSubmit={handleSubmit} className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm space-y-4">
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-charcoal mb-1">
             Item Name *
           </label>
           <input
@@ -65,19 +65,19 @@ export default function AddFoundItemPage() {
             placeholder="e.g. Blue Milton Water Bottle"
             value={formData.itemName}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-charcoal mb-1">
             Category *
           </label>
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
@@ -86,7 +86,7 @@ export default function AddFoundItemPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-charcoal mb-1">
             Detailed Description *
           </label>
           <textarea
@@ -96,19 +96,19 @@ export default function AddFoundItemPage() {
             placeholder="Describe the item (color, brand, identifying marks, condition)..."
             value={formData.description}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-charcoal mb-1">
             Found Location on Campus *
           </label>
           <select
             name="location"
             value={formData.location}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           >
             {CAMPUS_LOCATIONS.map((loc) => (
               <option key={loc} value={loc}>{loc}</option>
@@ -118,7 +118,7 @@ export default function AddFoundItemPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Found Date *
             </label>
             <input
@@ -127,11 +127,11 @@ export default function AddFoundItemPage() {
               required
               value={formData.foundDate}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Found Time *
             </label>
             <input
@@ -140,13 +140,13 @@ export default function AddFoundItemPage() {
               required
               value={formData.foundTime}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-charcoal mb-1">
             Item Image URL (Optional)
           </label>
           <input
@@ -155,16 +155,16 @@ export default function AddFoundItemPage() {
             placeholder="https://example.com/item.jpg"
             value={formData.imageUrl}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           />
-          <p className="text-xs text-gray-400 mt-1">Leave empty to use a placeholder image.</p>
+          <p className="text-xs text-slateGray mt-1">Leave empty to use a placeholder image.</p>
         </div>
 
-        <div className="border-t border-gray-200 pt-4 space-y-4">
-          <h2 className="font-semibold text-gray-800 text-sm">Finder&apos;s Information</h2>
+        <div className="border-t border-lightGray pt-4 space-y-4">
+          <h2 className="font-semibold text-charcoal text-sm">Finder&apos;s Information</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Your Name *
             </label>
             <input
@@ -174,12 +174,12 @@ export default function AddFoundItemPage() {
               placeholder="e.g. Rahul Sharma"
               value={formData.finderName}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-charcoal mb-1">
               Your Contact (Email / Phone) *
             </label>
             <input
@@ -189,7 +189,7 @@ export default function AddFoundItemPage() {
               placeholder="e.g. student@campus.edu or 9876543210"
               value={formData.finderContact}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
             />
           </div>
         </div>
@@ -197,13 +197,13 @@ export default function AddFoundItemPage() {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg text-sm transition"
+            className="flex-1 bg-electricBlue hover:bg-electricBlue-hover text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
           >
             Submit Found Item
           </button>
           <Link
             href="/found"
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 text-center"
+            className="px-4 py-2 bg-warmWhite border border-lightGray rounded-lg text-sm text-midnightNavy hover:bg-white text-center transition"
           >
             Cancel
           </Link>
