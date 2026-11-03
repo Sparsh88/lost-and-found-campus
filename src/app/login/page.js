@@ -39,7 +39,7 @@ export default function LoginPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-charcoal">Campus Login</h1>
           <p className="text-sm text-slateGray mt-1">
-            Sign in to access your campus lost and found account or admin panel
+            Sign in to access your campus lost and found account
           </p>
         </div>
 
@@ -52,12 +52,12 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-charcoal mb-1">
-              Campus Email or Admin ID
+              Campus Email or ID
             </label>
             <input
               type="email"
               required
-              placeholder="e.g. admin12@gmial.com"
+              placeholder="student@campus.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
@@ -85,12 +85,6 @@ export default function LoginPage() {
             Sign In
           </button>
         </form>
-
-        <div className="bg-warmWhite border border-lightGray rounded-xl p-3 text-xs text-slateGray space-y-1">
-          <p className="font-semibold text-charcoal">Admin Credentials:</p>
-          <p>Email: <code className="text-electricBlue font-mono font-medium">admin12@gmial.com</code></p>
-          <p>Password: <code className="text-electricBlue font-mono font-medium">Admin@12</code></p>
-        </div>
 
         <div className="text-center text-xs text-slateGray">
           <Link href="/" className="text-brightAzure hover:text-electricBlue hover:underline font-medium">
