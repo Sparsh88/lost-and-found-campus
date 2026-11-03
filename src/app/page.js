@@ -38,7 +38,7 @@ export default function HomePage() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded inline-block mb-3">
                 Module 1
@@ -56,10 +56,10 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border-2 border-blue-500 shadow-sm flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block mb-3">
-                Module 2 (Our Service)
+                Module 2
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Found Item Service</h3>
               <p className="text-sm text-gray-600 mb-4">
@@ -68,13 +68,13 @@ export default function HomePage() {
             </div>
             <Link
               href="/found"
-              className="bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-semibold hover:bg-blue-700"
+              className="text-blue-600 font-semibold text-sm hover:underline"
             >
-              Browse Found Items →
+              Go to Found Items →
             </Link>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded inline-block mb-3">
                 Module 3
