@@ -12,3 +12,4 @@ if (fs.existsSync(target)) {
     fs.writeFileSync(target, content, 'utf8')
   }
 }
+
