@@ -23,14 +23,14 @@ export default function Footer() {
 
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Campus Contact</h4>
-          <p className="text-sm text-gray-400">Campus Security Office: Gate 1</p>
-          <p className="text-sm text-gray-400">Email: security@campus.edu</p>
+          <p className="text-sm text-gray-400">Campus Security Office: Block 29</p>
+          <p className="text-sm text-gray-400">Email: info@lpu.co.in</p>
         </div>
 
       </div>
 
       <div className="border-t border-gray-800 mt-8 pt-4 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} Campus Lost &amp; Found
+        © 2026 Campus Lost &amp; Found - Group Project
       </div>
     </footer>
   )
