@@ -1,4 +1,3 @@
-// Sample categories for items
 export const CATEGORIES = [
   'ID Card',
   'Laptop',
@@ -11,7 +10,6 @@ export const CATEGORIES = [
   'Other',
 ]
 
-// Campus locations
 export const CAMPUS_LOCATIONS = [
   'Main Library',
   'Engineering Block A',
@@ -25,7 +23,6 @@ export const CAMPUS_LOCATIONS = [
   'Campus Gate',
 ]
 
-// Sample found items data
 export const initialFoundItems = [
   {
     id: '1',

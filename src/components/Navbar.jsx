@@ -21,7 +21,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between h-16 items-center">
           
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded bg-blue-700 text-white flex items-center justify-center font-bold text-sm">
               LF
@@ -31,7 +30,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-1">
             {links.map((link) => {
               const active = pathname === link.href
@@ -51,7 +49,6 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Login button */}
           <div className="hidden md:flex items-center">
             <Link
               href="/login"
@@ -61,7 +58,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 text-gray-600 rounded-md hover:bg-gray-100"
@@ -71,7 +67,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden border-t border-gray-200 px-4 pt-2 pb-4 space-y-1 bg-white">
           {links.map((link) => (

@@ -4,7 +4,6 @@ export default function HomePage() {
   return (
     <div className="space-y-12 pb-12">
       
-      {/* Hero Section */}
       <section className="bg-blue-800 text-white py-16 px-4 text-center">
         <div className="max-w-3xl mx-auto space-y-4">
           <span className="bg-blue-700 text-blue-100 text-xs px-3 py-1 rounded-full font-medium inline-block">
@@ -33,14 +32,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Modules Overview */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
           Project Modules
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Module 1 */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded inline-block mb-3">
@@ -59,7 +56,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Module 2 */}
           <div className="bg-white p-6 rounded-xl border-2 border-blue-500 shadow-sm flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block mb-3">
@@ -78,7 +74,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Module 3 */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
             <div>
               <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded inline-block mb-3">
@@ -99,7 +94,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How it Works */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="bg-gray-100 rounded-2xl p-6 sm:p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">

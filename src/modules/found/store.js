@@ -1,6 +1,5 @@
 import { initialFoundItems } from './data'
 
-// In-memory list of found items
 let items = [...initialFoundItems]
 
 export function getFoundItems() {

@@ -5,7 +5,6 @@ import StatusBadge from '@/components/ui/StatusBadge'
 export default function DashboardPage() {
   const items = getFoundItems()
 
-  // Calculate simple statistics
   const total = items.length
   const pending = items.filter((i) => i.status === 'Pending').length
   const claimed = items.filter((i) => i.status === 'Claimed').length
@@ -19,7 +18,6 @@ export default function DashboardPage() {
         <p className="text-gray-500 text-sm mt-1">Overview of campus lost &amp; found activities</p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white p-5 rounded-xl border border-gray-200">
           <p className="text-xs text-gray-500 font-medium uppercase">Total Found</p>
@@ -42,7 +40,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent Items Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-bold text-gray-800 text-base">Recent Found Items</h2>

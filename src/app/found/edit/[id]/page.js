@@ -62,7 +62,6 @@ export default function EditFoundItemPage() {
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
         
-        {/* Status selection */}
         <div className="bg-blue-50 p-4 rounded-lg space-y-2">
           <label className="block text-sm font-semibold text-blue-900">
             Current Status
@@ -96,7 +95,6 @@ export default function EditFoundItemPage() {
           )}
         </div>
 
-        {/* Item Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
           <input
@@ -109,7 +107,6 @@ export default function EditFoundItemPage() {
           />
         </div>
 
-        {/* Category */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
           <select
@@ -124,7 +121,6 @@ export default function EditFoundItemPage() {
           </select>
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea
@@ -137,7 +133,6 @@ export default function EditFoundItemPage() {
           />
         </div>
 
-        {/* Location */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
           <select
@@ -152,7 +147,6 @@ export default function EditFoundItemPage() {
           </select>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-3 pt-4">
           <button
             type="submit"

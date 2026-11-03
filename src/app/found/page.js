@@ -12,7 +12,6 @@ export default function FoundPage() {
   const [category, setCategory] = useState('All')
   const [status, setStatus] = useState('All')
 
-  // Filter items based on search, category and status
   const filteredItems = items.filter((item) => {
     const matchesSearch =
       item.itemName.toLowerCase().includes(search.toLowerCase()) ||
@@ -28,7 +27,6 @@ export default function FoundPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       
-      {/* Title & Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Found Items</h1>
@@ -45,7 +43,6 @@ export default function FoundPage() {
         </Link>
       </div>
 
-      {/* Search and Filters */}
       <div className="bg-white p-4 rounded-xl border border-gray-200 mb-6 space-y-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <input
@@ -69,7 +66,6 @@ export default function FoundPage() {
           </select>
         </div>
 
-        {/* Category Pills */}
         <div className="flex flex-wrap gap-1.5 pt-1">
           <button
             onClick={() => setCategory('All')}
@@ -97,7 +93,6 @@ export default function FoundPage() {
         </div>
       </div>
 
-      {/* Grid of Items */}
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (

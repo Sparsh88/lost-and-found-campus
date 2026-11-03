@@ -54,7 +54,6 @@ export default function AddFoundItemPage() {
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
         
-        {/* Item Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Item Name *
@@ -70,7 +69,6 @@ export default function AddFoundItemPage() {
           />
         </div>
 
-        {/* Category */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Category *
@@ -87,7 +85,6 @@ export default function AddFoundItemPage() {
           </select>
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Detailed Description *
@@ -103,7 +100,6 @@ export default function AddFoundItemPage() {
           />
         </div>
 
-        {/* Location */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Found Location on Campus *
@@ -120,7 +116,6 @@ export default function AddFoundItemPage() {
           </select>
         </div>
 
-        {/* Date and Time */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -150,7 +145,6 @@ export default function AddFoundItemPage() {
           </div>
         </div>
 
-        {/* Image URL */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Item Image URL (Optional)
@@ -166,7 +160,6 @@ export default function AddFoundItemPage() {
           <p className="text-xs text-gray-400 mt-1">Leave empty to use a placeholder image.</p>
         </div>
 
-        {/* Finder Info */}
         <div className="border-t border-gray-200 pt-4 space-y-4">
           <h2 className="font-semibold text-gray-800 text-sm">Finder&apos;s Information</h2>
 
@@ -201,7 +194,6 @@ export default function AddFoundItemPage() {
           </div>
         </div>
 
-        {/* Submit Buttons */}
         <div className="flex gap-3 pt-2">
           <button
             type="submit"

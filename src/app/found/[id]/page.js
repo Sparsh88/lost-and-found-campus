@@ -42,7 +42,6 @@ export default function ItemDetailsPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         
-        {/* Item Image */}
         <img
           src={item.imageUrl || 'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=600&q=80'}
           alt={item.itemName}
@@ -51,7 +50,6 @@ export default function ItemDetailsPage() {
 
         <div className="p-6 space-y-5">
           
-          {/* Header */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <CategoryBadge category={item.category} />
@@ -61,13 +59,11 @@ export default function ItemDetailsPage() {
             <p className="text-xs text-gray-400 mt-0.5">Item ID: #{item.id}</p>
           </div>
 
-          {/* Description */}
           <div>
             <h2 className="text-sm font-semibold text-gray-700 mb-1">Description</h2>
             <p className="text-gray-600 text-sm whitespace-pre-wrap">{item.description}</p>
           </div>
 
-          {/* Location & Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg text-sm">
             <div>
               <span className="text-gray-500 block text-xs">Found Location</span>
@@ -79,14 +75,12 @@ export default function ItemDetailsPage() {
             </div>
           </div>
 
-          {/* Finder info */}
           <div className="border-t border-gray-100 pt-3 text-sm">
             <h2 className="text-sm font-semibold text-gray-700 mb-1">Finder Details</h2>
             <p className="text-gray-600">Name: <span className="font-medium text-gray-800">{item.finderName}</span></p>
             <p className="text-gray-600">Contact: <span className="font-medium text-gray-800">{item.finderContact}</span></p>
           </div>
 
-          {/* Handover Info */}
           {item.handoverInfo && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm">
               <h2 className="font-semibold text-green-900 mb-1">Handover Information</h2>
@@ -94,7 +88,6 @@ export default function ItemDetailsPage() {
             </div>
           )}
 
-          {/* Action buttons */}
           <div className="border-t border-gray-100 pt-4 flex flex-wrap gap-3">
             <Link
               href={`/found/edit/${item.id}`}
