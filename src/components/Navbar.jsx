@@ -1,19 +1,43 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    function checkAuth() {
+      setIsAdmin(localStorage.getItem('isAdmin') === 'true')
+    }
+
+    checkAuth()
+    window.addEventListener('authChange', checkAuth)
+    window.addEventListener('storage', checkAuth)
+    return () => {
+      window.removeEventListener('authChange', checkAuth)
+      window.removeEventListener('storage', checkAuth)
+    }
+  }, [])
+
+  function handleLogout() {
+    localStorage.removeItem('isAdmin')
+    localStorage.removeItem('userEmail')
+    window.dispatchEvent(new Event('authChange'))
+    setIsAdmin(false)
+    router.push('/login')
+  }
 
   const links = [
     { name: 'Home', href: '/' },
     { name: 'Lost Items', href: '/lost' },
     { name: 'Found Items', href: '/found' },
     { name: 'Claims & Verify', href: '/claims' },
-    { name: 'Dashboard', href: '/dashboard' },
+    { name: isAdmin ? 'Admin Panel' : 'Dashboard', href: '/dashboard' },
   ]
 
   return (
@@ -46,13 +70,22 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="hidden md:flex items-center">
-            <Link
-              href="/login"
-              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition duration-200 shadow-sm"
-            >
-              Login
-            </Link>
+          <div className="hidden md:flex items-center gap-2">
+            {isAdmin ? (
+              <button
+                onClick={handleLogout}
+                className="bg-warmWhite border border-lightGray hover:bg-white text-crimsonRed text-sm font-medium px-4 py-2 rounded-lg transition duration-200 shadow-sm"
+              >
+                Logout (Admin)
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition duration-200 shadow-sm"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           <button
@@ -76,13 +109,25 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Link
-            href="/login"
-            onClick={() => setIsOpen(false)}
-            className="block text-center mt-3 bg-electricBlue hover:bg-electricBlue-hover text-white py-2 rounded-lg font-medium text-sm transition"
-          >
-            Login
-          </Link>
+          {isAdmin ? (
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                handleLogout()
+              }}
+              className="block w-full text-center mt-3 bg-warmWhite border border-lightGray text-crimsonRed py-2 rounded-lg font-medium text-sm transition"
+            >
+              Logout (Admin)
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="block text-center mt-3 bg-electricBlue hover:bg-electricBlue-hover text-white py-2 rounded-lg font-medium text-sm transition"
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </nav>
