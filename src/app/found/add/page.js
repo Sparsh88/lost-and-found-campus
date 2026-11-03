@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CATEGORIES, CAMPUS_LOCATIONS } from '@/modules/found/data'
@@ -8,6 +8,8 @@ import { addFoundItem } from '@/modules/found/store'
 
 export default function AddFoundItemPage() {
   const router = useRouter()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [formData, setFormData] = useState({
     itemName: '',
@@ -21,6 +23,26 @@ export default function AddFoundItemPage() {
     finderContact: '',
   })
 
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+
+    if (user || admin) {
+      setIsLoggedIn(true)
+      try {
+        const parsed = user ? JSON.parse(user) : null
+        if (parsed?.name) {
+          setFormData((prev) => ({
+            ...prev,
+            finderName: parsed.name,
+            finderContact: parsed.email || '',
+          }))
+        }
+      } catch {}
+    }
+    setLoading(false)
+  }, [])
+
   function handleChange(e) {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -28,6 +50,14 @@ export default function AddFoundItemPage() {
 
   function handleSubmit(e) {
     e.preventDefault()
+
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+    if (!user && !admin) {
+      alert('You must be logged in to report a found item.')
+      router.push('/login')
+      return
+    }
 
     if (!formData.itemName || !formData.description || !formData.foundDate || !formData.foundTime || !formData.finderName) {
       alert('Please fill in all required fields.')
@@ -39,11 +69,49 @@ export default function AddFoundItemPage() {
     router.push('/found')
   }
 
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center text-slateGray">
+        Loading...
+      </div>
+    )
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 text-center">
+        <div className="bg-softSand p-8 rounded-2xl border border-lightGray shadow-sm space-y-4">
+          <span className="text-xs bg-amber-50 text-amberOrange border border-amber-200 px-3 py-1 rounded-full font-semibold inline-block">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl font-bold text-charcoal">Login Required</h1>
+          <p className="text-slateGray text-sm">
+            You must be logged in to report a found item on campus. Please sign in to your account first.
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Link
+              href="/login"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-5 py-2.5 rounded-lg transition shadow-sm"
+            >
+              Sign In to Report
+            </Link>
+            <Link
+              href="/found"
+              className="bg-warmWhite border border-lightGray text-midnightNavy hover:bg-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
+            >
+              Back to Found Items
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       
       <div className="mb-6">
-        <Link href="/found" className="text-brightAzure hover:text-electricBlue text-sm hover:underline">
+        <Link href="/found" className="text-brightAzure hover:text-electricBlue text-sm hover:underline font-medium">
           ← Back to Found Items
         </Link>
         <h1 className="text-2xl font-bold text-charcoal mt-2">Report a Found Item</h1>

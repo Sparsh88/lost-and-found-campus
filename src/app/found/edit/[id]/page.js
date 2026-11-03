@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CATEGORIES, CAMPUS_LOCATIONS } from '@/modules/found/data'
@@ -10,6 +10,9 @@ export default function EditFoundItemPage() {
   const { id } = useParams()
   const router = useRouter()
   const existingItem = getFoundItemById(id)
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [form, setForm] = useState(
     existingItem || {
@@ -25,6 +28,53 @@ export default function EditFoundItemPage() {
       finderContact: '',
     }
   )
+
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+    if (user || admin) {
+      setIsLoggedIn(true)
+    }
+    setLoading(false)
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center text-slateGray">
+        Loading...
+      </div>
+    )
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 text-center">
+        <div className="bg-softSand p-8 rounded-2xl border border-lightGray shadow-sm space-y-4">
+          <span className="text-xs bg-amber-50 text-amberOrange border border-amber-200 px-3 py-1 rounded-full font-semibold inline-block">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl font-bold text-charcoal">Login Required</h1>
+          <p className="text-slateGray text-sm">
+            You must be logged in to edit item details or update custody status.
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Link
+              href="/login"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-5 py-2.5 rounded-lg transition shadow-sm"
+            >
+              Sign In to Edit
+            </Link>
+            <Link
+              href={`/found/${id}`}
+              className="bg-warmWhite border border-lightGray text-midnightNavy hover:bg-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
+            >
+              Back to Details
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!existingItem) {
     return (
@@ -44,6 +94,15 @@ export default function EditFoundItemPage() {
 
   function handleSubmit(e) {
     e.preventDefault()
+
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+    if (!user && !admin) {
+      alert('You must be logged in to edit this item.')
+      router.push('/login')
+      return
+    }
+
     updateFoundItem(id, form)
     alert('Item updated successfully!')
     router.push(`/found/${id}`)

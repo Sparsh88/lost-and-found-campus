@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getFoundItemById, deleteFoundItem } from '@/modules/found/store'
@@ -10,6 +11,15 @@ export default function ItemDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
   const item = getFoundItemById(id)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+    if (user || admin) {
+      setIsLoggedIn(true)
+    }
+  }, [])
 
   if (!item) {
     return (
@@ -26,6 +36,14 @@ export default function ItemDetailsPage() {
   }
 
   function handleDelete() {
+    const user = localStorage.getItem('currentUser')
+    const admin = localStorage.getItem('isAdmin') === 'true'
+    if (!user && !admin) {
+      alert('You must be logged in to delete an item.')
+      router.push('/login')
+      return
+    }
+
     if (confirm('Are you sure you want to delete this found item record?')) {
       deleteFoundItem(item.id)
       alert('Item deleted.')
@@ -89,18 +107,31 @@ export default function ItemDetailsPage() {
           )}
 
           <div className="border-t border-lightGray pt-4 flex flex-wrap gap-3">
-            <Link
-              href={`/found/edit/${item.id}`}
-              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
-            >
-              Edit / Update Status
-            </Link>
-            <button
-              onClick={handleDelete}
-              className="bg-red-50 hover:bg-red-100 text-crimsonRed border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition"
-            >
-              Delete Item
-            </button>
+            {isLoggedIn ? (
+              <Link
+                href={`/found/edit/${item.id}`}
+                className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
+              >
+                Edit / Update Status
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
+              >
+                Log In to Edit
+              </Link>
+            )}
+
+            {isLoggedIn && (
+              <button
+                onClick={handleDelete}
+                className="bg-red-50 hover:bg-red-100 text-crimsonRed border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                Delete Item
+              </button>
+            )}
+
             <Link
               href="/claims"
               className="bg-warmWhite border border-lightGray hover:bg-white text-midnightNavy text-sm font-medium px-4 py-2 rounded-lg ml-auto transition"
