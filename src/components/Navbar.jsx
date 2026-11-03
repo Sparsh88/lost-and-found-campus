@@ -21,10 +21,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between h-16 items-center">
           
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-electricBlue text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              LF
-            </div>
+          <Link href="/" className="flex items-center">
             <span className="font-bold text-lg text-charcoal tracking-tight">
               Campus Lost &amp; Found
             </span>
