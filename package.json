@@ -4,7 +4,7 @@
   "description": "A Next.js and React-based campus Lost and Found Management System developed as a group project.",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node -e \"try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next dev",
     "build": "node -e \"try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next build",
     "start": "next start",
     "lint": "next lint"
