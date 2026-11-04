@@ -1,25 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { getFoundItemById, deleteFoundItem } from '@/modules/found/store'
+import { getFoundItemById } from '@/modules/found/store'
 import StatusBadge from '@/components/ui/StatusBadge'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 
 export default function ItemDetailsPage() {
   const { id } = useParams()
-  const router = useRouter()
   const item = getFoundItemById(id)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  useEffect(() => {
-    const user = localStorage.getItem('currentUser')
-    const admin = localStorage.getItem('isAdmin') === 'true'
-    if (user || admin) {
-      setIsLoggedIn(true)
-    }
-  }, [])
 
   if (!item) {
     return (
@@ -33,22 +22,6 @@ export default function ItemDetailsPage() {
         </Link>
       </div>
     )
-  }
-
-  function handleDelete() {
-    const user = localStorage.getItem('currentUser')
-    const admin = localStorage.getItem('isAdmin') === 'true'
-    if (!user && !admin) {
-      alert('You must be logged in to delete an item.')
-      router.push('/login')
-      return
-    }
-
-    if (confirm('Are you sure you want to delete this found item record?')) {
-      deleteFoundItem(item.id)
-      alert('Item deleted.')
-      router.push('/found')
-    }
   }
 
   return (
@@ -106,37 +79,12 @@ export default function ItemDetailsPage() {
             </div>
           )}
 
-          <div className="border-t border-lightGray pt-4 flex flex-wrap gap-3">
-            {isLoggedIn ? (
-              <Link
-                href={`/found/edit/${item.id}`}
-                className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
-              >
-                Edit / Update Status
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
-              >
-                Log In to Edit
-              </Link>
-            )}
-
-            {isLoggedIn && (
-              <button
-                onClick={handleDelete}
-                className="bg-red-50 hover:bg-red-100 text-crimsonRed border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition"
-              >
-                Delete Item
-              </button>
-            )}
-
+          <div className="border-t border-lightGray pt-4">
             <Link
-              href="/claims"
-              className="bg-warmWhite border border-lightGray hover:bg-white text-midnightNavy text-sm font-medium px-4 py-2 rounded-lg ml-auto transition"
+              href={`/claims?itemId=${item.id}&name=${encodeURIComponent(item.itemName)}`}
+              className="inline-flex items-center justify-center bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition shadow-sm"
             >
-              Claim this Item
+              Claim &amp; Verify Item →
             </Link>
           </div>
 
