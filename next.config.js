@@ -5,6 +5,12 @@ try {
 } catch {}
 
 const nextConfig = {
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.cache = false
+    }
+    return config
+  },
   images: {
     remotePatterns: [
       {
