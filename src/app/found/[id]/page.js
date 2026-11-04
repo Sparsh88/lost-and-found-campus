@@ -81,10 +81,10 @@ export default function ItemDetailsPage() {
 
           <div className="border-t border-lightGray pt-4">
             <Link
-              href={`/claims?itemId=${item.id}&name=${encodeURIComponent(item.itemName)}`}
-              className="inline-flex items-center justify-center bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition shadow-sm"
+              href="/claims"
+              className="inline-block bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-6 py-2.5 rounded-lg transition shadow-sm"
             >
-              Claim &amp; Verify Item →
+              Go to Claim Page
             </Link>
           </div>
 
