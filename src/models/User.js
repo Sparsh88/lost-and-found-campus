@@ -20,19 +20,26 @@ const UserSchema = new mongoose.Schema(
         'Please provide a valid email address',
       ],
     },
+    registrationNumber: {
+      type: String,
+      required: [true, 'Registration / Staff ID is required'],
+      trim: true,
+      uppercase: true,
+    },
+    // Preserved alias for compatibility with earlier references
     studentId: {
       type: String,
       trim: true,
-      default: 'N/A',
+      default: '',
     },
     passwordHash: {
       type: String,
       required: [true, 'Password is required'],
-      select: false, // Don't return password by default in queries
+      select: false,
     },
     role: {
       type: String,
-      enum: ['student', 'staff', 'security', 'admin'],
+      enum: ['student', 'security', 'admin'],
       default: 'student',
       index: true,
     },
@@ -54,5 +61,23 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   }
 )
+
+UserSchema.index(
+  { registrationNumber: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      registrationNumber: { $type: 'string', $gt: '' },
+    },
+  }
+)
+
+UserSchema.pre('validate', function syncStudentId() {
+  if (this.registrationNumber && !this.studentId) {
+    this.studentId = this.registrationNumber
+  } else if (!this.registrationNumber && this.studentId) {
+    this.registrationNumber = this.studentId
+  }
+})
 
 export default mongoose.models.User || mongoose.model('User', UserSchema)

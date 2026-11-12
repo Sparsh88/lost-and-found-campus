@@ -26,6 +26,10 @@ yarn-error.log*
 .env*.local
 .env
 
+# Runtime uploads & private file storage
+/storage/
+/public/uploads/
+
 # Vercel
 .vercel
 

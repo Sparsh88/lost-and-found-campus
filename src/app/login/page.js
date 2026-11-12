@@ -18,7 +18,7 @@ export default function LoginPage() {
   // Register form state
   const [regName, setRegName] = useState('')
   const [regEmail, setRegEmail] = useState('')
-  const [regStudentId, setRegStudentId] = useState('')
+  const [regNumber, setRegNumber] = useState('')
   const [regPhone, setRegPhone] = useState('')
   const [regPassword, setRegPassword] = useState('')
   const [regConfirmPassword, setRegConfirmPassword] = useState('')
@@ -47,20 +47,12 @@ export default function LoginPage() {
         return
       }
 
-      // Store basic profile in localStorage for instant navbar display
-      localStorage.setItem('currentUser', JSON.stringify(data.user))
-      localStorage.setItem('isAdmin', data.user.role === 'admin' ? 'true' : 'false')
       window.dispatchEvent(new Event('authChange'))
-
       setSuccess('Signed in successfully! Redirecting...')
       setTimeout(() => {
-        if (data.user.role === 'admin' || data.user.role === 'security') {
-          router.push('/dashboard')
-        } else {
-          router.push('/found')
-        }
-      }, 500)
-    } catch (err) {
+        router.push('/found')
+      }, 450)
+    } catch {
       setError('Unable to reach server. Please check your connection.')
       setLoading(false)
     }
@@ -71,7 +63,7 @@ export default function LoginPage() {
     setError('')
     setSuccess('')
 
-    if (!regName.trim() || !regEmail.trim() || !regPassword) {
+    if (!regName.trim() || !regEmail.trim() || !regNumber.trim() || !regPhone.trim() || !regPassword) {
       setError('Please fill in all required fields.')
       return
     }
@@ -95,7 +87,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           name: regName.trim(),
           email: regEmail.trim(),
-          studentId: regStudentId.trim() || 'N/A',
+          registrationNumber: regNumber.trim(),
           phone: regPhone.trim(),
           password: regPassword,
         }),
@@ -109,15 +101,12 @@ export default function LoginPage() {
         return
       }
 
-      localStorage.setItem('currentUser', JSON.stringify(data.user))
-      localStorage.setItem('isAdmin', data.user.role === 'admin' ? 'true' : 'false')
       window.dispatchEvent(new Event('authChange'))
-
       setSuccess('Account created successfully! Welcome to Campus Lost & Found.')
       setTimeout(() => {
         router.push('/found')
-      }, 600)
-    } catch (err) {
+      }, 500)
+    } catch {
       setError('Unable to reach registration server.')
       setLoading(false)
     }
@@ -126,16 +115,15 @@ export default function LoginPage() {
   return (
     <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full bg-softSand p-6 sm:p-8 rounded-2xl border border-lightGray shadow-sm space-y-6">
-        
         <div className="text-center">
           <span className="text-xs bg-blue-100 text-electricBlue border border-blue-200 px-3 py-1 rounded-full font-semibold inline-block mb-2">
-            Campus Authentication
+            Student Authentication
           </span>
           <h1 className="text-2xl font-bold text-charcoal tracking-tight">
             Campus Lost &amp; Found
           </h1>
           <p className="text-sm text-slateGray mt-1">
-            {tab === 'login' ? 'Sign in with your university account' : 'Register a new student or staff account'}
+            {tab === 'login' ? 'Sign in with your university student account' : 'Register a new campus student account'}
           </p>
         </div>
 
@@ -187,7 +175,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 required
-                placeholder="student@campus.edu or admin@campus.edu"
+                placeholder="rahul.sharma@campus.edu"
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
@@ -215,12 +203,6 @@ export default function LoginPage() {
             >
               {loading ? 'Authenticating...' : 'Sign In'}
             </button>
-
-            <div className="bg-warmWhite border border-lightGray rounded-lg p-3 text-xs text-slateGray space-y-1">
-              <p className="font-semibold text-charcoal">Demo Test Credentials:</p>
-              <p>• Admin: <span className="font-mono text-charcoal">admin@campus.edu</span> / <span className="font-mono text-charcoal">Admin@123</span></p>
-              <p>• Student: <span className="font-mono text-charcoal">rahul.sharma@campus.edu</span> / <span className="font-mono text-charcoal">Student@123</span></p>
-            </div>
           </form>
         ) : (
           <form onSubmit={handleRegister} className="space-y-4">
@@ -255,22 +237,24 @@ export default function LoginPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-semibold text-charcoal mb-1">
-                  Student ID / Roll No
+                  Registration No *
                 </label>
                 <input
                   type="text"
+                  required
                   placeholder="e.g. 12104582"
-                  value={regStudentId}
-                  onChange={(e) => setRegStudentId(e.target.value)}
+                  value={regNumber}
+                  onChange={(e) => setRegNumber(e.target.value)}
                   className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
                 />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-charcoal mb-1">
-                  Phone (Optional)
+                  Mobile Number *
                 </label>
                 <input
                   type="tel"
+                  required
                   placeholder="9876543210"
                   value={regPhone}
                   onChange={(e) => setRegPhone(e.target.value)}
@@ -317,12 +301,14 @@ export default function LoginPage() {
           </form>
         )}
 
-        <div className="text-center text-xs text-slateGray pt-1">
+        <div className="flex items-center justify-between text-xs text-slateGray pt-1 border-t border-lightGray">
           <Link href="/" className="text-brightAzure hover:text-electricBlue hover:underline font-medium">
-            ← Return to Home Page
+            ← Return Home
+          </Link>
+          <Link href="/admin/login" className="text-midnightNavy hover:text-electricBlue hover:underline font-semibold">
+            Admin Portal →
           </Link>
         </div>
-
       </div>
     </div>
   )

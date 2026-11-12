@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server'
-import { getSessionFromRequest } from '@/lib/auth'
+import {
+  clearAuthCookie,
+  getAuthenticatedUser,
+  parseCookies,
+  STUDENT_COOKIE_NAME,
+} from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request) {
   try {
-    const session = await getSessionFromRequest(request)
-
-    if (!session) {
-      return NextResponse.json({ user: null }, { status: 200 })
+    const cookies = parseCookies(request)
+    const hasCookie = Boolean(cookies[STUDENT_COOKIE_NAME])
+    const user = await getAuthenticatedUser(request, { cookieName: STUDENT_COOKIE_NAME })
+    const res = NextResponse.json({ user: user || null }, { status: 200 })
+    if (!user && hasCookie) {
+      clearAuthCookie(res, STUDENT_COOKIE_NAME, request)
     }
-
-    return NextResponse.json({ user: session }, { status: 200 })
+    return res
   } catch (error) {
     console.error('Session API Error:', error)
-    return NextResponse.json({ user: null }, { status: 500 })
+    return NextResponse.json({ user: null }, { status: 200 })
   }
 }

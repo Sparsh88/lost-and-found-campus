@@ -1,46 +1,47 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI
-
 let cached = global.mongoose
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null, isConnected: false }
+  cached = global.mongoose = { conn: null, promise: null }
 }
 
 export default async function connectDB() {
-  if (!MONGODB_URI) {
-    return null
+  const uri = process.env.MONGODB_URI
+  if (!uri) {
+    throw new Error('MONGODB_URI environment variable is not configured.')
   }
 
-  if (cached.conn && cached.isConnected) {
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 3000, // Quick 3s timeout for responsive fallback
+      serverSelectionTimeoutMS: 10000,
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts)
-      .then((m) => {
-        cached.isConnected = true
-        return m
-      })
-      .catch((err) => {
-        cached.promise = null
-        cached.isConnected = false
-        console.warn('⚠️ MongoDB Atlas is currently unreachable (check IP whitelist at cloud.mongodb.com). Operating in resilient fallback mode.')
-        return null
-      })
+    cached.promise = mongoose.connect(uri, opts).catch((err) => {
+      cached.promise = null
+      throw err
+    })
   }
 
   try {
     cached.conn = await cached.promise
     return cached.conn
-  } catch {
+  } catch (error) {
     cached.promise = null
-    cached.isConnected = false
-    return null
+    cached.conn = null
+    throw error
   }
+}
+
+export async function getGridFSBucket(bucketName = 'private_evidence') {
+  await connectDB()
+  const db = mongoose.connection.db
+  if (!db) {
+    throw new Error('MongoDB database handle is not initialized.')
+  }
+  return new mongoose.mongo.GridFSBucket(db, { bucketName })
 }

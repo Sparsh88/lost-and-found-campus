@@ -3,62 +3,36 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { CATEGORIES, CAMPUS_LOCATIONS } from '@/modules/found/data'
+import { ITEM_CATEGORIES, CAMPUS_LOCATIONS, DEFAULT_ITEM_IMAGE } from '@/lib/constants'
 
 export default function AddFoundItemPage() {
   const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [error, setError] = useState('')
 
   const [formData, setFormData] = useState({
-    type: 'FOUND',
     itemName: '',
-    category: 'ID Card',
+    category: ITEM_CATEGORIES[0],
     description: '',
-    location: 'Main Library',
+    foundLocation: CAMPUS_LOCATIONS[0],
     foundDate: new Date().toISOString().split('T')[0],
     foundTime: '',
     imageUrl: '',
-    finderName: '',
-    finderContact: '',
-    secretQuestion: '',
-    secretAnswer: '',
+    imagePublicId: '',
+    hiddenIdentifyingDetails: '',
   })
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch('/api/auth/me')
-        const data = await res.json()
-        if (data.user) {
-          setIsLoggedIn(true)
-          setFormData((prev) => ({
-            ...prev,
-            finderName: data.user.name,
-            finderContact: data.user.email,
-          }))
-        } else {
-          // Check fallback localStorage
-          const localUser = localStorage.getItem('currentUser')
-          if (localUser) {
-            const parsed = JSON.parse(localUser)
-            setIsLoggedIn(true)
-            setFormData((prev) => ({
-              ...prev,
-              finderName: parsed.name,
-              finderContact: parsed.email,
-            }))
-          }
-        }
-      } catch {
-        setIsLoggedIn(true)
-      } finally {
-        setLoading(false)
-      }
-    }
-    checkAuth()
+    fetch('/api/auth/me', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentUser(data.user || null)
+      })
+      .catch(() => setCurrentUser(null))
+      .finally(() => setLoading(false))
   }, [])
 
   function handleChange(e) {
@@ -66,11 +40,41 @@ export default function AddFoundItemPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setError('')
+    setUploadingImage(true)
+
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/uploads/public', {
+        method: 'POST',
+        body: fd,
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to upload image.')
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          imageUrl: data.url,
+          imagePublicId: data.publicId || '',
+        }))
+      }
+    } catch {
+      setError('Image upload failed. Please try again.')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
 
-    if (!formData.itemName || !formData.description || !formData.foundDate || !formData.finderName) {
+    if (!formData.itemName.trim() || !formData.description.trim() || !formData.foundDate || !formData.foundLocation.trim()) {
       setError('Please fill in all required fields.')
       return
     }
@@ -78,10 +82,13 @@ export default function AddFoundItemPage() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/items', {
+      const res = await fetch('/api/found-items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          imageUrl: formData.imageUrl.trim() || DEFAULT_ITEM_IMAGE,
+        }),
       })
 
       const data = await res.json()
@@ -92,8 +99,8 @@ export default function AddFoundItemPage() {
         return
       }
 
-      router.push('/found')
-    } catch (err) {
+      router.push(`/found/${data.item.id}`)
+    } catch {
       setError('Unable to reach server. Please try again.')
       setSubmitting(false)
     }
@@ -107,16 +114,45 @@ export default function AddFoundItemPage() {
     )
   }
 
+  if (!currentUser) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 text-center">
+        <div className="bg-softSand p-8 rounded-2xl border border-lightGray shadow-sm space-y-4">
+          <span className="text-xs bg-amber-50 text-amberOrange border border-amber-200 px-3 py-1 rounded-full font-semibold inline-block">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl font-bold text-charcoal">Sign In to Report Found Item</h1>
+          <p className="text-slateGray text-sm">
+            Please log in with your campus account. Your finder identity is automatically linked securely on the server.
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Link
+              href="/login"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-5 py-2.5 rounded-lg transition shadow-sm"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/found"
+              className="bg-warmWhite border border-lightGray text-midnightNavy hover:bg-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
+            >
+              Back to Found Items
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      
       <div className="mb-6">
         <Link href="/found" className="text-brightAzure hover:text-electricBlue text-sm hover:underline font-medium">
           ← Back to Found Items
         </Link>
         <h1 className="text-2xl font-bold text-charcoal mt-2">Report a Found Item</h1>
         <p className="text-slateGray text-sm">
-          Register an item found on campus so the rightful owner can verify and recover it.
+          Register an item found on campus so the rightful owner can verify ownership and recover it.
         </p>
       </div>
 
@@ -127,7 +163,6 @@ export default function AddFoundItemPage() {
       )}
 
       <form onSubmit={handleSubmit} className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm space-y-4">
-        
         <div>
           <label className="block text-sm font-semibold text-charcoal mb-1">
             Item Name *
@@ -136,7 +171,7 @@ export default function AddFoundItemPage() {
             type="text"
             name="itemName"
             required
-            placeholder="e.g. Blue Milton Water Bottle"
+            placeholder="e.g. Black HP Laptop or Blue Milton Water Bottle"
             value={formData.itemName}
             onChange={handleChange}
             className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
@@ -153,7 +188,7 @@ export default function AddFoundItemPage() {
             onChange={handleChange}
             className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           >
-            {CATEGORIES.map((cat) => (
+            {ITEM_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
@@ -167,28 +202,32 @@ export default function AddFoundItemPage() {
             name="description"
             rows={3}
             required
-            placeholder="Describe the item (color, general location, condition). Do NOT reveal secret identifying marks here!"
+            placeholder="Describe the item (color, general condition). Keep unique secret marks hidden below!"
             value={formData.description}
             onChange={handleChange}
             className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           />
-          <p className="text-xs text-slateGray mt-1">💡 Tip: Avoid writing unique secret stickers or serial numbers here to prevent false claims.</p>
+          <p className="text-xs text-slateGray mt-1">💡 Tip: Avoid revealing unique stickers, lockscreens, or serial numbers in the public description.</p>
         </div>
 
         <div>
           <label className="block text-sm font-semibold text-charcoal mb-1">
             Found Location on Campus *
           </label>
-          <select
-            name="location"
-            value={formData.location}
+          <input
+            type="text"
+            name="foundLocation"
+            list="found-locations-list"
+            required
+            value={formData.foundLocation}
             onChange={handleChange}
             className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
-          >
+          />
+          <datalist id="found-locations-list">
             {CAMPUS_LOCATIONS.map((loc) => (
-              <option key={loc} value={loc}>{loc}</option>
+              <option key={loc} value={loc} />
             ))}
-          </select>
+          </datalist>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -219,94 +258,74 @@ export default function AddFoundItemPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-charcoal mb-1">
-            Item Image URL (Optional)
+        <div className="bg-warmWhite border border-lightGray rounded-xl p-4 space-y-3">
+          <label className="block text-sm font-semibold text-charcoal">
+            Item Photograph (Optional)
           </label>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileUpload}
+            className="w-full text-xs text-slateGray file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-lightGray file:text-xs file:font-semibold file:bg-softSand file:text-charcoal hover:file:bg-white"
+          />
+          {uploadingImage && (
+            <p className="text-xs text-brightAzure">Uploading image...</p>
+          )}
+          <div className="text-xs text-slateGray">Or paste an image URL:</div>
           <input
             type="url"
             name="imageUrl"
             placeholder="https://example.com/item.jpg"
             value={formData.imageUrl}
             onChange={handleChange}
-            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+            className="w-full bg-white border border-lightGray rounded-lg px-3 py-2 text-xs text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:outline-none"
           />
-          <p className="text-xs text-slateGray mt-1">Leave empty to use standard campus placeholder image.</p>
+          {formData.imageUrl && (
+            <img
+              src={formData.imageUrl}
+              alt="Preview"
+              className="h-32 w-full object-cover rounded-lg border border-lightGray"
+            />
+          )}
         </div>
 
-        {/* Blind Verification Secret Anchor */}
-        <div className="bg-warmWhite border border-amber-200 rounded-xl p-4 space-y-3">
+        <div className="bg-warmWhite border border-amber-200 rounded-xl p-4 space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-amberOrange font-bold text-xs">🛡️ ANTI-FRAUD VERIFICATION ANCHOR</span>
-            <span className="text-xs text-slateGray">(Hidden from Public Catalog)</span>
+            <span className="text-amberOrange font-bold text-xs">🛡️ HIDDEN VERIFICATION DETAILS</span>
+            <span className="text-xs text-slateGray">(Admin-only — never shown to claimants)</span>
           </div>
-          <p className="text-xs text-slateGray">
-            Add a secret question only the real owner knows (e.g., sticker character, screen wallpaper, keychain name).
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-charcoal mb-1">Challenge Question</label>
-              <input
-                type="text"
-                name="secretQuestion"
-                placeholder="e.g. What sticker is on the laptop?"
-                value={formData.secretQuestion}
-                onChange={handleChange}
-                className="w-full bg-white border border-lightGray rounded-lg px-3 py-1.5 text-xs text-charcoal focus:ring-1 focus:ring-skyBlue focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-charcoal mb-1">Correct Answer</label>
-              <input
-                type="text"
-                name="secretAnswer"
-                placeholder="e.g. NASA astronaut sticker"
-                value={formData.secretAnswer}
-                onChange={handleChange}
-                className="w-full bg-white border border-lightGray rounded-lg px-3 py-1.5 text-xs text-charcoal focus:ring-1 focus:ring-skyBlue focus:outline-none"
-              />
-            </div>
-          </div>
+          <textarea
+            name="hiddenIdentifyingDetails"
+            rows={2}
+            placeholder="Note serial numbers, stickers, items inside, or unique scratches so admins can verify the true owner..."
+            value={formData.hiddenIdentifyingDetails}
+            onChange={handleChange}
+            className="w-full bg-white border border-lightGray rounded-lg px-3 py-2 text-xs text-charcoal focus:ring-1 focus:ring-skyBlue focus:outline-none"
+          />
         </div>
 
-        <div className="border-t border-lightGray pt-4 space-y-4">
-          <h2 className="font-semibold text-charcoal text-sm">Finder&apos;s Information</h2>
-
-          <div>
-            <label className="block text-sm font-semibold text-charcoal mb-1">
-              Your Name *
-            </label>
-            <input
-              type="text"
-              name="finderName"
-              required
-              placeholder="e.g. Rahul Sharma"
-              value={formData.finderName}
-              onChange={handleChange}
-              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-charcoal mb-1">
-              Your Contact (Email / Phone) *
-            </label>
-            <input
-              type="text"
-              name="finderContact"
-              required
-              placeholder="e.g. student@campus.edu or 9876543210"
-              value={formData.finderContact}
-              onChange={handleChange}
-              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
-            />
+        <div className="border-t border-lightGray pt-4 space-y-2">
+          <h2 className="font-semibold text-charcoal text-sm">Verified Finder Profile</h2>
+          <div className="bg-warmWhite border border-lightGray rounded-lg p-3 text-xs text-slateGray space-y-1">
+            <p>
+              <span className="font-semibold text-charcoal">Name:</span> {currentUser.name}
+            </p>
+            <p>
+              <span className="font-semibold text-charcoal">Registration No:</span> {currentUser.registrationNumber}
+            </p>
+            <p>
+              <span className="font-semibold text-charcoal">Mobile:</span> {currentUser.phone || 'On profile'}
+            </p>
+            <p className="text-[11px] text-slateGray/80 pt-1">
+              🔒 Automatically populated from your authenticated profile. Your registration number and phone are never exposed publicly.
+            </p>
           </div>
         </div>
 
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || uploadingImage}
             className="flex-1 bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
           >
             {submitting ? 'Registering Item...' : 'Submit Found Item'}
@@ -318,7 +337,6 @@ export default function AddFoundItemPage() {
             Cancel
           </Link>
         </div>
-
       </form>
     </div>
   )

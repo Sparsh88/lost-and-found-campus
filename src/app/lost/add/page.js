@@ -3,59 +3,36 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { categories, DEFAULT_ITEM_IMAGE } from '@/modules/lost'
+import { ITEM_CATEGORIES, CAMPUS_LOCATIONS, DEFAULT_ITEM_IMAGE } from '@/lib/constants'
 
 export default function AddLostItemPage() {
   const router = useRouter()
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [error, setError] = useState('')
 
   const [formData, setFormData] = useState({
-    type: 'LOST',
     itemName: '',
-    category: 'Electronics',
+    category: ITEM_CATEGORIES[0],
     description: '',
-    location: '',
-    foundDate: new Date().toISOString().split('T')[0],
+    lostLocation: CAMPUS_LOCATIONS[0],
+    lostDate: new Date().toISOString().split('T')[0],
+    identifyingDetails: '',
     imageUrl: '',
-    finderName: '',
-    finderContact: '',
+    imagePublicId: '',
   })
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch('/api/auth/me')
-        const data = await res.json()
-        if (data.user) {
-          setIsLoggedIn(true)
-          setFormData((prev) => ({
-            ...prev,
-            finderName: data.user.name,
-            finderContact: data.user.email,
-          }))
-        } else {
-          const user = localStorage.getItem('currentUser')
-          if (user) {
-            const parsed = JSON.parse(user)
-            setIsLoggedIn(true)
-            setFormData((prev) => ({
-              ...prev,
-              finderName: parsed.name,
-              finderContact: parsed.email,
-            }))
-          }
-        }
-      } catch {
-        setIsLoggedIn(true)
-      } finally {
-        setLoading(false)
-      }
-    }
-    checkAuth()
+    fetch('/api/auth/me', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        setCurrentUser(data.user || null)
+      })
+      .catch(() => setCurrentUser(null))
+      .finally(() => setLoading(false))
   }, [])
 
   function handleChange(e) {
@@ -66,6 +43,36 @@ export default function AddLostItemPage() {
     }))
   }
 
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setError('')
+    setUploadingImage(true)
+
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/uploads/public', {
+        method: 'POST',
+        body: fd,
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to upload image.')
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          imageUrl: data.url,
+          imagePublicId: data.publicId || '',
+        }))
+      }
+    } catch {
+      setError('Image upload failed. Please try again.')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
@@ -73,8 +80,8 @@ export default function AddLostItemPage() {
     if (
       !formData.itemName.trim() ||
       !formData.description.trim() ||
-      !formData.location.trim() ||
-      !formData.foundDate
+      !formData.lostLocation.trim() ||
+      !formData.lostDate
     ) {
       setError('Please fill all required fields.')
       return
@@ -83,13 +90,11 @@ export default function AddLostItemPage() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/items', {
+      const res = await fetch('/api/lost-items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          finderName: formData.finderName || 'Student',
-          finderContact: formData.finderContact || 'contact@campus.edu',
           imageUrl: formData.imageUrl.trim() || DEFAULT_ITEM_IMAGE,
         }),
       })
@@ -102,7 +107,7 @@ export default function AddLostItemPage() {
         return
       }
 
-      router.push('/lost')
+      router.push(`/lost/${data.item.id}`)
     } catch {
       setError('Unable to reach server. Please try again.')
       setSubmitting(false)
@@ -117,9 +122,38 @@ export default function AddLostItemPage() {
     )
   }
 
+  if (!currentUser) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 text-center">
+        <div className="bg-softSand p-8 rounded-2xl border border-lightGray shadow-sm space-y-4">
+          <span className="text-xs bg-amber-50 text-amberOrange border border-amber-200 px-3 py-1 rounded-full font-semibold inline-block">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl font-bold text-charcoal">Sign In to Report Lost Item</h1>
+          <p className="text-slateGray text-sm">
+            Please log in with your campus student account so finders can notify you privately if they locate your item.
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Link
+              href="/login"
+              className="bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-5 py-2.5 rounded-lg transition shadow-sm"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/lost"
+              className="bg-warmWhite border border-lightGray text-midnightNavy hover:bg-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
+            >
+              Back to Lost Items
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-
       <div className="mb-6">
         <Link
           href="/lost"
@@ -133,7 +167,7 @@ export default function AddLostItemPage() {
         </h1>
 
         <p className="text-slateGray text-sm">
-          Enter the details of the item you lost on campus so security and finders can match it.
+          Enter the details of the item you lost on campus so security and finders can notify you privately.
         </p>
       </div>
 
@@ -147,12 +181,10 @@ export default function AddLostItemPage() {
         onSubmit={handleSubmit}
         className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm space-y-4"
       >
-
         <div>
           <label className="block text-sm font-semibold text-charcoal mb-1">
             Item Name *
           </label>
-
           <input
             type="text"
             name="itemName"
@@ -168,14 +200,13 @@ export default function AddLostItemPage() {
           <label className="block text-sm font-semibold text-charcoal mb-1">
             Category *
           </label>
-
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
             className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
           >
-            {categories.map((cat) => (
+            {ITEM_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>
@@ -185,78 +216,108 @@ export default function AddLostItemPage() {
 
         <div>
           <label className="block text-sm font-semibold text-charcoal mb-1">
-            Description *
+            Detailed Description *
           </label>
-
           <textarea
             name="description"
             required
             rows={4}
             value={formData.description}
             onChange={handleChange}
-            placeholder="Describe colors, scratches, distinctive marks, brand, or contents..."
-            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+            placeholder="Describe color, brand, size, model, and circumstances when lost..."
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
           />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-charcoal mb-1">
+              Lost Location *
+            </label>
+            <input
+              type="text"
+              name="lostLocation"
+              list="campus-locations-list"
+              required
+              value={formData.lostLocation}
+              onChange={handleChange}
+              placeholder="Where did you last have the item?"
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
+            />
+            <datalist id="campus-locations-list">
+              {CAMPUS_LOCATIONS.map((loc) => (
+                <option key={loc} value={loc} />
+              ))}
+            </datalist>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-charcoal mb-1">
+              Lost Date *
+            </label>
+            <input
+              type="date"
+              name="lostDate"
+              required
+              value={formData.lostDate}
+              onChange={handleChange}
+              className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-semibold text-charcoal mb-1">
-            Lost Location *
+            Additional Identifying Details (Optional)
           </label>
-
-          <input
-            type="text"
-            name="location"
-            required
-            value={formData.location}
+          <textarea
+            name="identifyingDetails"
+            rows={2}
+            value={formData.identifyingDetails}
             onChange={handleChange}
-            placeholder="Where did you last have or leave the item?"
-            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+            placeholder="Scratches, stickers, engravings, case details, or distinguishing marks..."
+            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-charcoal mb-1">
-            Date Lost *
+        <div className="bg-warmWhite border border-lightGray rounded-xl p-4 space-y-3">
+          <label className="block text-sm font-semibold text-charcoal">
+            Item Photograph (Optional)
           </label>
-
           <input
-            type="date"
-            name="foundDate"
-            required
-            value={formData.foundDate}
-            onChange={handleChange}
-            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileUpload}
+            className="w-full text-xs text-slateGray file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-lightGray file:text-xs file:font-semibold file:bg-softSand file:text-charcoal hover:file:bg-white"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-charcoal mb-1">
-            Image URL (Optional)
-          </label>
-
+          {uploadingImage && (
+            <p className="text-xs text-brightAzure">Uploading photograph...</p>
+          )}
+          <div className="text-xs text-slateGray">Or paste an image URL:</div>
           <input
             type="url"
             name="imageUrl"
             value={formData.imageUrl}
             onChange={handleChange}
-            placeholder="Paste photo link or leave empty"
-            className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+            placeholder="https://example.com/item.jpg"
+            className="w-full bg-white border border-lightGray rounded-lg px-3 py-2 text-xs text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
           />
-
-          <p className="text-xs text-slateGray mt-1">
-            If you don&apos;t provide an image, the default image will be displayed.
-          </p>
+          {formData.imageUrl && (
+            <img
+              src={formData.imageUrl}
+              alt="Preview"
+              className="h-32 w-full object-cover rounded-lg border border-lightGray"
+            />
+          )}
         </div>
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || uploadingImage}
           className="w-full bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-sm"
         >
           {submitting ? 'Submitting Report...' : 'Submit Lost Item Report'}
         </button>
-
       </form>
     </div>
   )

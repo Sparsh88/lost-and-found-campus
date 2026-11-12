@@ -1,122 +1,86 @@
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import User from '@/models/User'
-import { verifyPassword, signJWT } from '@/lib/auth'
-import { LoginSchema } from '@/lib/validators'
+import {
+  verifyPassword,
+  signJWT,
+  setAuthCookie,
+  STUDENT_COOKIE_NAME,
+  isAdminRole,
+} from '@/lib/auth'
+import { LoginSchema, formatZodError } from '@/lib/validators'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 export async function POST(request) {
   try {
+    const rl = checkRateLimit(request, 'auth-login', {
+      maxRequests: 20,
+      windowMs: 5 * 60_000,
+    })
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many login attempts. Please wait a few minutes and try again.' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } }
+      )
+    }
+
     const body = await request.json()
     const validation = LoginSchema.safeParse(body)
-
     if (!validation.success) {
-      const firstError = validation.error.errors[0]?.message || 'Invalid credentials'
-      return NextResponse.json({ error: firstError }, { status: 400 })
+      return NextResponse.json({ error: formatZodError(validation) }, { status: 400 })
     }
 
     const { email, password } = validation.data
     const cleanEmail = email.toLowerCase().trim()
 
-    const conn = await connectDB()
+    await connectDB()
 
-    if (conn) {
-      const user = await User.findOne({ email: cleanEmail }).select('+passwordHash')
-      if (user) {
-        if (user.isBlocked) {
-          return NextResponse.json(
-            { error: 'This campus account has been suspended by administration.' },
-            { status: 403 }
-          )
-        }
-
-        const isMatch = await verifyPassword(password, user.passwordHash)
-        if (isMatch) {
-          const tokenPayload = {
-            id: user._id.toString(),
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            studentId: user.studentId,
-          }
-
-          const token = await signJWT(tokenPayload)
-          const response = NextResponse.json(
-            { message: 'Signed in successfully', user: tokenPayload },
-            { status: 200 }
-          )
-
-          response.cookies.set('campus_token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60,
-            path: '/',
-          })
-
-          return response
-        }
-      }
+    const user = await User.findOne({ email: cleanEmail }).select('+passwordHash')
+    if (!user) {
+      return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 })
     }
 
-    // Resilient fallback authentication for offline/local development
-    const demoUsers = [
-      {
-        id: 'admin-01',
-        name: 'Campus Chief Security',
-        email: 'admin@campus.edu',
-        role: 'admin',
-        studentId: 'STAFF-001',
-        expectedPass: 'Admin@123',
-      },
-      {
-        id: 'sec-01',
-        name: 'Duty Officer Singh',
-        email: 'security@campus.edu',
-        role: 'security',
-        studentId: 'SEC-104',
-        expectedPass: 'Security@123',
-      },
-      {
-        id: 'student-01',
-        name: 'Rahul Sharma',
-        email: 'rahul.sharma@campus.edu',
-        role: 'student',
-        studentId: '12104582',
-        expectedPass: 'Student@123',
-      },
-    ]
-
-    const demoUser = demoUsers.find((u) => u.email === cleanEmail)
-    if (demoUser && demoUser.expectedPass === password) {
-      const tokenPayload = {
-        id: demoUser.id,
-        name: demoUser.name,
-        email: demoUser.email,
-        role: demoUser.role,
-        studentId: demoUser.studentId,
-      }
-
-      const token = await signJWT(tokenPayload)
-      const response = NextResponse.json(
-        { message: 'Signed in successfully (demo mode)', user: tokenPayload },
-        { status: 200 }
+    if (user.isBlocked) {
+      return NextResponse.json(
+        { error: 'This campus account has been suspended by administration.' },
+        { status: 403 }
       )
-
-      response.cookies.set('campus_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60,
-        path: '/',
-      })
-
-      return response
     }
 
-    return NextResponse.json(
-      { error: 'Incorrect email or password. Use demo account: admin@campus.edu / Admin@123' },
-      { status: 401 }
+    const isMatch = await verifyPassword(password, user.passwordHash)
+    if (!isMatch) {
+      return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 })
+    }
+
+    if (isAdminRole(user.role)) {
+      return NextResponse.json(
+        { error: 'Administrators must sign in through the dedicated Admin Portal (/admin/login).' },
+        { status: 403 }
+      )
+    }
+
+    const userPayload = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      registrationNumber: user.registrationNumber || user.studentId || '',
+      studentId: user.registrationNumber || user.studentId || '',
+      phone: user.phone || '',
+    }
+
+    const token = await signJWT({
+      id: userPayload.id,
+      role: userPayload.role,
+      email: userPayload.email,
+    })
+
+    const response = NextResponse.json(
+      { message: 'Signed in successfully', user: userPayload },
+      { status: 200 }
     )
+    setAuthCookie(response, STUDENT_COOKIE_NAME, token, request)
+    return response
   } catch (error) {
     console.error('Login API Error:', error)
     return NextResponse.json({ error: 'Server error during login' }, { status: 500 })

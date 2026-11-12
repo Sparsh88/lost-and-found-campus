@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { CATEGORIES } from '@/modules/found/data'
+import { ITEM_CATEGORIES } from '@/lib/constants'
 import FoundItemCard from '@/components/ui/FoundItemCard'
 
 export default function FoundPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
   const [status, setStatus] = useState('All')
@@ -18,14 +19,17 @@ export default function FoundPage() {
 
   async function fetchItems() {
     setLoading(true)
+    setError('')
     try {
-      const res = await fetch('/api/items?type=FOUND')
+      const res = await fetch('/api/found-items', { cache: 'no-store' })
       const data = await res.json()
-      if (data.items) {
-        setItems(data.items)
+      if (!res.ok) {
+        setError(data.error || 'Failed to load found items.')
+      } else {
+        setItems(data.items || [])
       }
-    } catch (err) {
-      console.error('Failed to load found items:', err)
+    } catch {
+      setError('Unable to reach server.')
     } finally {
       setLoading(false)
     }
@@ -34,18 +38,17 @@ export default function FoundPage() {
   const filteredItems = items.filter((item) => {
     const matchesSearch =
       item.itemName?.toLowerCase().includes(search.toLowerCase()) ||
-      item.location?.toLowerCase().includes(search.toLowerCase()) ||
-      item.description?.toLowerCase().includes(search.toLowerCase())
+      item.foundLocation?.toLowerCase().includes(search.toLowerCase()) ||
+      item.description?.toLowerCase().includes(search.toLowerCase()) ||
+      item.foundId?.toLowerCase().includes(search.toLowerCase())
 
     const matchesCategory = category === 'All' || item.category === category
     const matchesStatus = status === 'All' || item.status === status
-
     return matchesSearch && matchesCategory && matchesStatus
   })
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-charcoal">Found Items</h1>
@@ -66,7 +69,7 @@ export default function FoundPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
-            placeholder="Search by item name, location or description..."
+            placeholder="Search by item name, found ID, location or description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/70 focus:outline-none focus:ring-2 focus:ring-skyBlue focus:border-skyBlue"
@@ -78,11 +81,10 @@ export default function FoundPage() {
             className="bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-skyBlue focus:border-skyBlue"
           >
             <option value="All">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="Claimed">Claimed</option>
-            <option value="Verified">Verified</option>
-            <option value="Disputed">Disputed</option>
-            <option value="Handed Over">Handed Over</option>
+            <option value="AVAILABLE">Available to Claim</option>
+            <option value="RESERVED_FOR_HANDOVER">Reserved for Handover</option>
+            <option value="RETURNED">Returned</option>
+            <option value="CLOSED">Closed</option>
           </select>
         </div>
 
@@ -97,7 +99,7 @@ export default function FoundPage() {
           >
             All
           </button>
-          {CATEGORIES.map((cat) => (
+          {ITEM_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
@@ -112,6 +114,12 @@ export default function FoundPage() {
           ))}
         </div>
       </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-crimsonRed text-xs p-3 rounded-lg">
+          ⚠️ {error}
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -140,7 +148,6 @@ export default function FoundPage() {
           </button>
         </div>
       )}
-
     </div>
   )
 }

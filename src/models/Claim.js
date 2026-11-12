@@ -1,78 +1,152 @@
 import mongoose from 'mongoose'
+import { CLAIM_STATUSES } from '@/lib/constants'
+
+const PrivateFileSubSchema = new mongoose.Schema(
+  {
+    fileId: { type: String, required: true },
+    originalName: { type: String, required: true },
+    mimeType: { type: String, required: true },
+    size: { type: Number, required: true },
+  },
+  { _id: false }
+)
 
 const ClaimSchema = new mongoose.Schema(
   {
-    itemId: {
+    claimId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    foundItemId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Item',
+      ref: 'FoundItem',
       required: true,
       index: true,
     },
-    claimant: {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: null,
-      },
-      name: {
-        type: String,
-        required: [true, 'Please provide your full name'],
-        trim: true,
-      },
-      email: {
-        type: String,
-        required: [true, 'Please provide your email'],
-        lowercase: true,
-        trim: true,
-      },
-      studentId: {
-        type: String,
-        required: [true, 'Please provide your Student Roll / ID number'],
-        trim: true,
-      },
-      phone: {
-        type: String,
-        required: [true, 'Please provide a contact phone number'],
-        trim: true,
-      },
+    claimantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
     },
-    proofDescription: {
+    claimantName: {
       type: String,
-      required: [true, 'Please describe detailed proof of ownership'],
-      maxlength: [2000, 'Proof cannot exceed 2000 characters'],
+      required: [true, 'Full name is required'],
+      trim: true,
     },
-    proofAttachments: [
-      {
-        type: String,
-      },
-    ],
-    answerToChallenge: {
+    registrationNumber: {
+      type: String,
+      required: [true, 'Registration number is required'],
+      trim: true,
+    },
+    mobileNumber: {
+      type: String,
+      required: [true, 'Mobile number is required'],
+      trim: true,
+    },
+    ownershipDetails: {
+      uniqueIdentifiers: { type: String, required: true, maxlength: 1000 },
+      marksOrStickers: { type: String, required: true, maxlength: 1000 },
+      contentsInside: { type: String, required: true, maxlength: 1000 },
+      ownerOnlyDetail: { type: String, required: true, maxlength: 1000 },
+    },
+    proofFile: {
+      type: PrivateFileSubSchema,
+      default: null,
+    },
+    purchaseBillFile: {
+      type: PrivateFileSubSchema,
+      default: null,
+    },
+    additionalEvidenceText: {
       type: String,
       default: '',
+      maxlength: 1500,
+    },
+    additionalFile: {
+      type: PrivateFileSubSchema,
+      default: null,
+    },
+    adminInfoRequestMessage: {
+      type: String,
+      default: '',
+      maxlength: 1500,
+    },
+    claimantAdditionalResponse: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+    },
+    allowResubmission: {
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,
-      enum: ['Submitted', 'Under Review', 'Approved', 'Rejected', 'Disputed', 'Handed Over'],
-      default: 'Submitted',
+      enum: CLAIM_STATUSES,
+      default: 'PENDING',
       index: true,
-    },
-    handoverOtp: {
-      type: String,
-      default: '', // 6-digit OTP generated when approved
     },
     rejectionReason: {
       type: String,
       default: '',
+      maxlength: 1000,
+    },
+    internalAdminNotes: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+      select: false,
+    },
+    handoverOtp: {
+      type: String,
+      default: '',
     },
     reviewedBy: {
-      officerName: { type: String, default: '' },
-      reviewedAt: { type: Date, default: null },
-      notes: { type: String, default: '' },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
+    reviewedByName: {
+      type: String,
+      default: '',
+    },
+    reviewedAt: {
+      type: Date,
+      default: null,
+    },
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
+    approvedByName: {
+      type: String,
+      default: '',
+    },
+    approvedAt: {
+      type: Date,
+      default: null,
     },
   },
   {
     timestamps: true,
   }
 )
+
+// Enforce at most one active claim per claimant per found item at database level
+ClaimSchema.index(
+  { foundItemId: 1, claimantId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: { $in: ['PENDING', 'ADDITIONAL_INFO_REQUESTED', 'APPROVED'] },
+    },
+  }
+)
+ClaimSchema.index({ foundItemId: 1, status: 1, createdAt: -1 })
+ClaimSchema.index({ claimantId: 1, createdAt: -1 })
 
 export default mongoose.models.Claim || mongoose.model('Claim', ClaimSchema)

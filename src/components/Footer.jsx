@@ -4,7 +4,6 @@ export default function Footer() {
   return (
     <footer className="bg-midnightNavy text-slate-300 py-10 mt-auto border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        
         <div>
           <h3 className="text-white font-bold text-base mb-2">Campus Lost &amp; Found</h3>
           <p className="text-sm text-slate-400">
@@ -18,6 +17,7 @@ export default function Footer() {
             <li><Link href="/lost" className="hover:text-brightAzure transition">Module 1: Lost Item Service</Link></li>
             <li><Link href="/found" className="hover:text-brightAzure transition">Module 2: Found Item Service</Link></li>
             <li><Link href="/claims" className="hover:text-brightAzure transition">Module 3: Claim &amp; Verification</Link></li>
+            <li><Link href="/admin/login" className="hover:text-brightAzure transition">Staff Portal: Admin Login</Link></li>
           </ul>
         </div>
 
@@ -26,7 +26,6 @@ export default function Footer() {
           <p className="text-sm text-slate-400">Email: info@lpu.co.in</p>
           <p className="text-sm text-slate-400">Campus Security Office: Block 29</p>
         </div>
-
       </div>
 
       <div className="border-t border-white/10 mt-8 pt-4 text-center text-xs text-slate-400">
