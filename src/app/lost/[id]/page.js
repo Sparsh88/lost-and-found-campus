@@ -1,24 +1,28 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getLostItemById, DEFAULT_ITEM_IMAGE } from '@/modules/lost'
+import {
+  getLostItemById,
+  DEFAULT_ITEM_IMAGE,
+} from '@/modules/lost'
 
 export default function LostItemDetailsPage() {
   const { id } = useParams()
+
   const [item, setItem] = useState(null)
-  const [loaded, setLoaded] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setItem(getLostItemById(id))
-    setLoaded(true)
+    setLoading(false)
   }, [id])
 
-  if (!loaded) {
+  if (loading) {
     return (
-      <div className="text-center py-16 text-slateGray">
-        Loading item...
+      <div className="max-w-xl mx-auto px-4 py-16 text-center text-slateGray">
+        Loading...
       </div>
     )
   }
@@ -26,6 +30,7 @@ export default function LostItemDetailsPage() {
   if (!item) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center">
+
         <h2 className="text-xl font-bold text-charcoal mb-2">
           Item Not Found
         </h2>
@@ -40,6 +45,7 @@ export default function LostItemDetailsPage() {
         >
           ← Back to Lost Items
         </Link>
+
       </div>
     )
   }
@@ -69,14 +75,15 @@ export default function LostItemDetailsPage() {
         <div className="p-6 space-y-5">
 
           <div>
+
             <div className="flex items-center gap-2 mb-2">
 
-              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">
+              <span className="bg-white/80 text-brightAzure border border-lightGray px-2.5 py-0.5 rounded-full text-xs font-semibold">
                 {item.category}
               </span>
 
-              <span className="text-xs bg-red-100 text-crimsonRed px-2 py-1 rounded-full font-semibold">
-                {item.status || 'Lost'}
+              <span className="bg-amber-50 text-amberOrange border border-amber-200 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                {item.status}
               </span>
 
             </div>
@@ -88,9 +95,11 @@ export default function LostItemDetailsPage() {
             <p className="text-xs text-slateGray mt-0.5">
               Item ID: #{item.id}
             </p>
+
           </div>
 
           <div>
+
             <h2 className="text-sm font-semibold text-charcoal mb-1">
               Description
             </h2>
@@ -98,6 +107,7 @@ export default function LostItemDetailsPage() {
             <p className="text-slateGray text-sm whitespace-pre-wrap">
               {item.description}
             </p>
+
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-warmWhite border border-lightGray p-4 rounded-lg text-sm">
@@ -114,23 +124,47 @@ export default function LostItemDetailsPage() {
 
             <div>
               <span className="text-slateGray block text-xs">
-                Lost Date
+                Date &amp; Time
               </span>
 
               <span className="font-semibold text-charcoal">
-                📅 {item.lostDate}
+                📅 {item.lostDate} at {item.lostTime}
               </span>
             </div>
 
           </div>
 
+          <div className="border-t border-lightGray pt-3 text-sm">
+
+            <h2 className="text-sm font-semibold text-charcoal mb-1">
+              Owner Details
+            </h2>
+
+            <p className="text-slateGray">
+              Name:{' '}
+              <span className="font-semibold text-charcoal">
+                {item.ownerName}
+              </span>
+            </p>
+
+            <p className="text-slateGray">
+              Contact:{' '}
+              <span className="font-semibold text-charcoal">
+                {item.ownerContact}
+              </span>
+            </p>
+
+          </div>
+
           <div className="border-t border-lightGray pt-4">
+
             <Link
-              href="/found"
-              className="inline-flex items-center justify-center bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition shadow-sm"
+              href="/claims"
+              className="inline-block bg-electricBlue hover:bg-electricBlue-hover text-white text-sm font-medium px-6 py-2.5 rounded-lg transition shadow-sm"
             >
-              Browse Found Items →
+              Go to Claim Page
             </Link>
+
           </div>
 
         </div>
