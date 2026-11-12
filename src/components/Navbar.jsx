@@ -11,17 +11,29 @@ export default function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
 
-  useEffect(() => {
-    function checkAuth() {
-      setIsAdmin(localStorage.getItem('isAdmin') === 'true')
-      try {
-        const user = localStorage.getItem('currentUser')
-        setCurrentUser(user ? JSON.parse(user) : null)
-      } catch {
-        setCurrentUser(null)
+  async function checkAuth() {
+    try {
+      const res = await fetch('/api/auth/me')
+      const data = await res.json()
+      if (data.user) {
+        setCurrentUser(data.user)
+        setIsAdmin(data.user.role === 'admin' || data.user.role === 'security')
+        return
       }
-    }
+    } catch {}
 
+    // Fallback to local state
+    const localUser = localStorage.getItem('currentUser')
+    const adminFlag = localStorage.getItem('isAdmin') === 'true'
+    setIsAdmin(adminFlag)
+    try {
+      setCurrentUser(localUser ? JSON.parse(localUser) : null)
+    } catch {
+      setCurrentUser(null)
+    }
+  }
+
+  useEffect(() => {
     checkAuth()
     window.addEventListener('authChange', checkAuth)
     window.addEventListener('storage', checkAuth)
@@ -31,7 +43,10 @@ export default function Navbar() {
     }
   }, [])
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {}
     localStorage.removeItem('isAdmin')
     localStorage.removeItem('currentUser')
     localStorage.removeItem('userEmail')
@@ -49,7 +64,7 @@ export default function Navbar() {
   ]
 
   if (isAdmin) {
-    links.push({ name: 'Admin Panel', href: '/dashboard' })
+    links.push({ name: 'Admin Desk', href: '/dashboard' })
   }
 
   return (
@@ -57,7 +72,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between h-16 items-center">
           
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-xl">🎓</span>
             <span className="font-bold text-lg text-charcoal tracking-tight">
               Campus Lost &amp; Found
             </span>
@@ -86,7 +102,7 @@ export default function Navbar() {
             {currentUser ? (
               <div className="flex items-center gap-3">
                 <span className="text-xs font-semibold text-charcoal bg-softSand px-3 py-1.5 rounded-lg border border-lightGray">
-                  {isAdmin ? '🛡️ Admin' : `👤 ${currentUser.name}`}
+                  {isAdmin ? '🛡️ Security Officer' : `👤 ${currentUser.name}`}
                 </span>
                 <button
                   onClick={handleLogout}
@@ -129,7 +145,7 @@ export default function Navbar() {
           {currentUser ? (
             <div className="pt-2 border-t border-lightGray space-y-2">
               <span className="block text-xs font-semibold text-charcoal bg-softSand px-3 py-1.5 rounded-lg border border-lightGray text-center">
-                {isAdmin ? '🛡️ Admin' : `👤 ${currentUser.name}`}
+                {isAdmin ? '🛡️ Security Officer' : `👤 ${currentUser.name}`}
               </span>
               <button
                 onClick={() => {

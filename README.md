@@ -37,7 +37,7 @@ A full-featured web application connecting students who lose belongings with peo
 
 | Module | Service | Status |
 |---|---|---|
-| **Module 1** | Lost Item Service | ✅ Implemented (Teammate 1) |
+| **Module 1** | Lost Item Service | 🔧 In Progress (Teammate 1) |
 | **Module 2** | Found Item Service | ✅ Implemented (You) |
 | **Module 3** | Claim & Verification Service | 🔧 In Progress (Teammate 3) |
 

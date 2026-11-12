@@ -9,66 +9,69 @@ export default function LoginPage() {
   const [tab, setTab] = useState('login')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
 
+  // Login form state
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
 
+  // Register form state
   const [regName, setRegName] = useState('')
   const [regEmail, setRegEmail] = useState('')
   const [regStudentId, setRegStudentId] = useState('')
+  const [regPhone, setRegPhone] = useState('')
   const [regPassword, setRegPassword] = useState('')
   const [regConfirmPassword, setRegConfirmPassword] = useState('')
 
-  function getStoredUsers() {
+  async function handleLogin(e) {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
     try {
-      const stored = localStorage.getItem('campusUsers')
-      return stored ? JSON.parse(stored) : []
-    } catch {
-      return []
-    }
-  }
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: loginEmail.trim(),
+          password: loginPassword,
+        }),
+      })
 
-  function handleLogin(e) {
-    e.preventDefault()
-    setError('')
-    setSuccess('')
+      const data = await res.json()
 
-    const cleanEmail = loginEmail.trim().toLowerCase()
-    const isAdmin = (cleanEmail === 'admin12@gmial.com' || cleanEmail === 'admin12@gmail.com') && loginPassword === 'Admin@12'
+      if (!res.ok) {
+        setError(data.error || 'Login failed. Please check your credentials.')
+        setLoading(false)
+        return
+      }
 
-    if (isAdmin) {
-      localStorage.setItem('isAdmin', 'true')
-      localStorage.setItem('currentUser', JSON.stringify({ name: 'Campus Admin', email: cleanEmail, role: 'admin' }))
+      // Store basic profile in localStorage for instant navbar display
+      localStorage.setItem('currentUser', JSON.stringify(data.user))
+      localStorage.setItem('isAdmin', data.user.role === 'admin' ? 'true' : 'false')
       window.dispatchEvent(new Event('authChange'))
-      router.push('/dashboard')
-      return
+
+      setSuccess('Signed in successfully! Redirecting...')
+      setTimeout(() => {
+        if (data.user.role === 'admin' || data.user.role === 'security') {
+          router.push('/dashboard')
+        } else {
+          router.push('/found')
+        }
+      }, 500)
+    } catch (err) {
+      setError('Unable to reach server. Please check your connection.')
+      setLoading(false)
     }
-
-    const users = getStoredUsers()
-    const existingUser = users.find((u) => u.email.toLowerCase() === cleanEmail)
-
-    if (!existingUser) {
-      setError('No account found with this email. Please click "Create Account" first.')
-      return
-    }
-
-    if (existingUser.password !== loginPassword) {
-      setError('Incorrect password. Please verify your password.')
-      return
-    }
-
-    localStorage.setItem('isAdmin', 'false')
-    localStorage.setItem('currentUser', JSON.stringify(existingUser))
-    window.dispatchEvent(new Event('authChange'))
-    router.push('/found')
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault()
     setError('')
     setSuccess('')
 
-    if (!regName.trim() || !regEmail.trim() || !regPassword || !regConfirmPassword) {
+    if (!regName.trim() || !regEmail.trim() || !regPassword) {
       setError('Please fill in all required fields.')
       return
     }
@@ -83,36 +86,41 @@ export default function LoginPage() {
       return
     }
 
-    const cleanEmail = regEmail.trim().toLowerCase()
+    setLoading(true)
 
-    if (cleanEmail === 'admin12@gmial.com' || cleanEmail === 'admin12@gmail.com') {
-      setError('This email is reserved for administration.')
-      return
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: regName.trim(),
+          email: regEmail.trim(),
+          studentId: regStudentId.trim() || 'N/A',
+          phone: regPhone.trim(),
+          password: regPassword,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Registration failed.')
+        setLoading(false)
+        return
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify(data.user))
+      localStorage.setItem('isAdmin', data.user.role === 'admin' ? 'true' : 'false')
+      window.dispatchEvent(new Event('authChange'))
+
+      setSuccess('Account created successfully! Welcome to Campus Lost & Found.')
+      setTimeout(() => {
+        router.push('/found')
+      }, 600)
+    } catch (err) {
+      setError('Unable to reach registration server.')
+      setLoading(false)
     }
-
-    const users = getStoredUsers()
-    const existingUser = users.find((u) => u.email.toLowerCase() === cleanEmail)
-
-    if (existingUser) {
-      setError('An account with this email already exists. Please Sign In.')
-      return
-    }
-
-    const newUser = {
-      name: regName.trim(),
-      email: cleanEmail,
-      studentId: regStudentId.trim() || 'N/A',
-      password: regPassword,
-      role: 'user',
-    }
-
-    const updatedUsers = [...users, newUser]
-    localStorage.setItem('campusUsers', JSON.stringify(updatedUsers))
-    localStorage.setItem('isAdmin', 'false')
-    localStorage.setItem('currentUser', JSON.stringify(newUser))
-    window.dispatchEvent(new Event('authChange'))
-
-    router.push('/found')
   }
 
   return (
@@ -120,11 +128,14 @@ export default function LoginPage() {
       <div className="max-w-md w-full bg-softSand p-6 sm:p-8 rounded-2xl border border-lightGray shadow-sm space-y-6">
         
         <div className="text-center">
+          <span className="text-xs bg-blue-100 text-electricBlue border border-blue-200 px-3 py-1 rounded-full font-semibold inline-block mb-2">
+            Campus Authentication
+          </span>
           <h1 className="text-2xl font-bold text-charcoal tracking-tight">
             Campus Lost &amp; Found
           </h1>
           <p className="text-sm text-slateGray mt-1">
-            {tab === 'login' ? 'Sign in to your campus account' : 'Register a new student or finder account'}
+            {tab === 'login' ? 'Sign in with your university account' : 'Register a new student or staff account'}
           </p>
         </div>
 
@@ -154,14 +165,16 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-crimsonRed text-xs p-3 rounded-lg">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-crimsonRed text-xs p-3 rounded-lg flex items-center gap-2">
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="bg-emerald-50 border border-emerald-200 text-forestGreen text-xs p-3 rounded-lg">
-            {success}
+          <div className="bg-emerald-50 border border-emerald-200 text-forestGreen text-xs p-3 rounded-lg flex items-center gap-2">
+            <span>✓</span>
+            <span>{success}</span>
           </div>
         )}
 
@@ -169,12 +182,12 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-1">
-                Campus Email or ID
+                Campus Email
               </label>
               <input
                 type="email"
                 required
-                placeholder="student@campus.edu"
+                placeholder="student@campus.edu or admin@campus.edu"
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
@@ -197,10 +210,17 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-electricBlue hover:bg-electricBlue-hover text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
+              disabled={loading}
+              className="w-full bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
             >
-              Sign In
+              {loading ? 'Authenticating...' : 'Sign In'}
             </button>
+
+            <div className="bg-warmWhite border border-lightGray rounded-lg p-3 text-xs text-slateGray space-y-1">
+              <p className="font-semibold text-charcoal">Demo Test Credentials:</p>
+              <p>• Admin: <span className="font-mono text-charcoal">admin@campus.edu</span> / <span className="font-mono text-charcoal">Admin@123</span></p>
+              <p>• Student: <span className="font-mono text-charcoal">rahul.sharma@campus.edu</span> / <span className="font-mono text-charcoal">Student@123</span></p>
+            </div>
           </form>
         ) : (
           <form onSubmit={handleRegister} className="space-y-4">
@@ -232,22 +252,36 @@ export default function LoginPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-charcoal mb-1">
-                Student / Roll No (Optional)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. 12345678"
-                value={regStudentId}
-                onChange={(e) => setRegStudentId(e.target.value)}
-                className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-semibold text-charcoal mb-1">
+                  Student ID / Roll No
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 12104582"
+                  value={regStudentId}
+                  onChange={(e) => setRegStudentId(e.target.value)}
+                  className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-charcoal mb-1">
+                  Phone (Optional)
+                </label>
+                <input
+                  type="tel"
+                  placeholder="9876543210"
+                  value={regPhone}
+                  onChange={(e) => setRegPhone(e.target.value)}
+                  className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+                />
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-1">
-                Create Password *
+                Password *
               </label>
               <input
                 type="password"
@@ -275,9 +309,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-electricBlue hover:bg-electricBlue-hover text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
+              disabled={loading}
+              className="w-full bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Register Campus Account'}
             </button>
           </form>
         )}

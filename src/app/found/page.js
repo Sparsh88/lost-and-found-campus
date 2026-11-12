@@ -1,22 +1,41 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { CATEGORIES } from '@/modules/found/data'
-import { getFoundItems } from '@/modules/found/store'
 import FoundItemCard from '@/components/ui/FoundItemCard'
 
 export default function FoundPage() {
-  const [items] = useState(getFoundItems())
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
   const [status, setStatus] = useState('All')
 
+  useEffect(() => {
+    fetchItems()
+  }, [])
+
+  async function fetchItems() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/items?type=FOUND')
+      const data = await res.json()
+      if (data.items) {
+        setItems(data.items)
+      }
+    } catch (err) {
+      console.error('Failed to load found items:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredItems = items.filter((item) => {
     const matchesSearch =
-      item.itemName.toLowerCase().includes(search.toLowerCase()) ||
-      item.location.toLowerCase().includes(search.toLowerCase()) ||
-      item.description.toLowerCase().includes(search.toLowerCase())
+      item.itemName?.toLowerCase().includes(search.toLowerCase()) ||
+      item.location?.toLowerCase().includes(search.toLowerCase()) ||
+      item.description?.toLowerCase().includes(search.toLowerCase())
 
     const matchesCategory = category === 'All' || item.category === category
     const matchesStatus = status === 'All' || item.status === status
@@ -31,7 +50,7 @@ export default function FoundPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-charcoal">Found Items</h1>
           <p className="text-slateGray text-sm mt-1">
-            Browse all registered items found across campus ({filteredItems.length} items)
+            Browse registered items found across campus ({filteredItems.length} items)
           </p>
         </div>
 
@@ -62,6 +81,7 @@ export default function FoundPage() {
             <option value="Pending">Pending</option>
             <option value="Claimed">Claimed</option>
             <option value="Verified">Verified</option>
+            <option value="Disputed">Disputed</option>
             <option value="Handed Over">Handed Over</option>
           </select>
         </div>
@@ -93,7 +113,17 @@ export default function FoundPage() {
         </div>
       </div>
 
-      {filteredItems.length > 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} className="bg-softSand rounded-xl p-4 border border-lightGray animate-pulse space-y-3">
+              <div className="h-44 bg-lightGray/60 rounded-lg"></div>
+              <div className="h-4 bg-lightGray/80 rounded w-3/4"></div>
+              <div className="h-3 bg-lightGray/60 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      ) : filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <FoundItemCard key={item.id} item={item} />
