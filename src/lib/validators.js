@@ -24,10 +24,41 @@ export const RegisterSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters').max(128),
 })
 
-export const LoginSchema = z.object({
-  email: z.string().trim().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+export const AdminRegisterSchema = z.object({
+  name: z.string().trim().min(2, 'Full name must be at least 2 characters').max(80),
+  registrationNumber: z
+    .string()
+    .trim()
+    .min(3, 'Admin / Staff ID is required (at least 3 characters)')
+    .max(40),
+  email: z.string().trim().email('Please enter a valid campus email address'),
+  phone: z
+    .string()
+    .trim()
+    .regex(phoneRegex, 'Please enter a valid mobile number (8–15 digits)'),
+  role: z.enum(['admin', 'security']).default('admin'),
+  password: z.string().min(6, 'Password must be at least 6 characters').max(128),
+  enrollmentKey: z.string().trim().optional().or(z.literal('')),
 })
+
+export const LoginSchema = z
+  .object({
+    registrationNumber: z.string().trim().optional(),
+    adminId: z.string().trim().optional(),
+    identifier: z.string().trim().optional(),
+    email: z.string().trim().optional(),
+    password: z.string().min(1, 'Password is required'),
+  })
+  .refine(
+    (data) =>
+      Boolean(
+        (data.registrationNumber && data.registrationNumber.length >= 2) ||
+          (data.adminId && data.adminId.length >= 2) ||
+          (data.identifier && data.identifier.length >= 2) ||
+          (data.email && data.email.length >= 3)
+      ),
+    { message: 'ID / Registration Number is required' }
+  )
 
 export const LostItemCreateSchema = z.object({
   itemName: z.string().trim().min(3, 'Item name must be at least 3 characters').max(120),

@@ -30,14 +30,26 @@ export async function POST(request) {
       return NextResponse.json({ error: formatZodError(validation) }, { status: 400 })
     }
 
-    const { email, password } = validation.data
-    const cleanEmail = email.toLowerCase().trim()
+    const { registrationNumber, identifier, email, password } = validation.data
+    const rawIdentifier = (registrationNumber || identifier || email || '').trim()
 
     await connectDB()
 
-    const user = await User.findOne({ email: cleanEmail }).select('+passwordHash')
+    let user = null
+    if (rawIdentifier.includes('@')) {
+      user = await User.findOne({ email: rawIdentifier.toLowerCase() }).select('+passwordHash')
+    } else {
+      const cleanId = rawIdentifier.toUpperCase()
+      user = await User.findOne({
+        $or: [{ registrationNumber: cleanId }, { studentId: cleanId }],
+      }).select('+passwordHash')
+    }
+
     if (!user) {
-      return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Invalid university registration number or password.' },
+        { status: 401 }
+      )
     }
 
     if (user.isBlocked) {
@@ -49,7 +61,10 @@ export async function POST(request) {
 
     const isMatch = await verifyPassword(password, user.passwordHash)
     if (!isMatch) {
-      return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Invalid university registration number or password.' },
+        { status: 401 }
+      )
     }
 
     if (isAdminRole(user.role)) {

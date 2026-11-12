@@ -6,7 +6,8 @@ import Handover from '@/models/Handover'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 import StatusBadge from '@/components/ui/StatusBadge'
 import FoundItemCard from '@/components/ui/FoundItemCard'
-import { CAMPUS_LOCATIONS, DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { CAMPUS_LOCATIONS } from '@/lib/constants'
+import { resolveItemImage } from '@/lib/itemImages'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,7 +73,7 @@ async function getHomeData() {
         description: item.description,
         lostDate: item.lostDate,
         lostLocation: item.lostLocation,
-        imageUrl: item.imageUrl || DEFAULT_ITEM_IMAGE,
+        imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
         status: item.status,
       })),
       recentFound: recentFoundDocs.map((item) => ({
@@ -84,7 +85,7 @@ async function getHomeData() {
         foundDate: item.foundDate,
         foundTime: item.foundTime || '',
         foundLocation: item.foundLocation,
-        imageUrl: item.imageUrl || DEFAULT_ITEM_IMAGE,
+        imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
         status: item.status,
         finderName: item.finderName,
         isFinderOwner: false,
@@ -274,7 +275,7 @@ export default async function HomePage() {
               >
                 <div>
                   <img
-                    src={item.imageUrl || DEFAULT_ITEM_IMAGE}
+                    src={resolveItemImage(item.itemName, item.category, item.imageUrl)}
                     alt={item.itemName}
                     className="w-full h-44 object-cover"
                   />

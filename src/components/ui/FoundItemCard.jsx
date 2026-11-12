@@ -1,17 +1,23 @@
 import Link from 'next/link'
 import StatusBadge from './StatusBadge'
 import CategoryBadge from './CategoryBadge'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { getSuggestedItemImage, resolveItemImage } from '@/lib/itemImages'
 
 export default function FoundItemCard({ item }) {
   const isAvailable = item.status === 'AVAILABLE' && !item.isFinderOwner
+  const fallbackSrc = getSuggestedItemImage(item.itemName, item.category)
+  const displaySrc = resolveItemImage(item.itemName, item.category, item.imageUrl)
 
   return (
     <div className="bg-softSand rounded-xl shadow-sm border border-lightGray overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between">
       <div>
         <img
-          src={item.imageUrl || DEFAULT_ITEM_IMAGE}
+          src={displaySrc}
           alt={item.itemName}
+          onError={(e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = fallbackSrc
+          }}
           className="w-full h-44 object-cover"
         />
 

@@ -1,5 +1,4 @@
-export const DEFAULT_ITEM_IMAGE =
-  'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=600&q=80'
+export const DEFAULT_ITEM_IMAGE = '/images/items/bag.jpg'
 
 export const ITEM_CATEGORIES = [
   'ID Card',

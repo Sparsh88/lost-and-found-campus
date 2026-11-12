@@ -36,14 +36,18 @@ export async function POST(request) {
     await connectDB()
 
     const existingUser = await User.findOne({
-      $or: [{ email: cleanEmail }, { registrationNumber: cleanRegNo }],
+      $or: [
+        { email: cleanEmail },
+        { registrationNumber: cleanRegNo },
+        { studentId: cleanRegNo },
+      ],
     }).lean()
 
     if (existingUser) {
       const msg =
         existingUser.email === cleanEmail
           ? 'An account with this campus email already exists.'
-          : 'An account with this registration number already exists.'
+          : 'An account with this university registration number already exists.'
       return NextResponse.json({ error: msg }, { status: 409 })
     }
 
@@ -83,6 +87,12 @@ export async function POST(request) {
     setAuthCookie(response, STUDENT_COOKIE_NAME, token, request)
     return response
   } catch (error) {
+    if (error?.code === 11000) {
+      return NextResponse.json(
+        { error: 'An account with this registration number or email already exists.' },
+        { status: 409 }
+      )
+    }
     console.error('Registration API Error:', error)
     return NextResponse.json(
       { error: 'Unable to complete registration right now. Please try again.' },

@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import { requireAdmin } from '@/lib/auth'
+import { resolveItemImage } from '@/lib/itemImages'
 import FoundItem from '@/models/FoundItem'
 import Claim from '@/models/Claim'
 import Handover from '@/models/Handover'
@@ -37,6 +38,7 @@ export async function GET(request, { params }) {
       foundItem: {
         ...foundItem,
         id: foundItem._id.toString(),
+        imageUrl: resolveItemImage(foundItem.itemName, foundItem.category, foundItem.imageUrl),
       },
       claims: claims.map((c) => ({
         ...c,

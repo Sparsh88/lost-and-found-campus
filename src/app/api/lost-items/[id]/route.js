@@ -4,7 +4,7 @@ import connectDB from '@/lib/mongodb'
 import LostItem from '@/models/LostItem'
 import { getAuthenticatedUser, requireUser, STUDENT_COOKIE_NAME } from '@/lib/auth'
 import { LostItemUpdateSchema, formatZodError } from '@/lib/validators'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { resolveItemImage } from '@/lib/itemImages'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,7 +40,7 @@ export async function GET(request, { params }) {
         lostDate: item.lostDate,
         lostLocation: item.lostLocation,
         location: item.lostLocation,
-        imageUrl: item.imageUrl || DEFAULT_ITEM_IMAGE,
+        imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
         identifyingDetails: item.identifyingDetails || '',
         status: item.status,
         finderSubmissionsCount: item.finderSubmissionsCount || 0,
@@ -119,9 +119,14 @@ export async function PATCH(request, { params }) {
 
     for (const field of editableFields) {
       if (updates[field] !== undefined) {
-        item[field] = updates[field] || (field === 'imageUrl' ? DEFAULT_ITEM_IMAGE : updates[field])
+        item[field] = updates[field]
       }
     }
+    item.imageUrl = resolveItemImage(
+      item.itemName,
+      item.category,
+      updates.imageUrl !== undefined ? updates.imageUrl : item.imageUrl
+    )
 
     await item.save()
 

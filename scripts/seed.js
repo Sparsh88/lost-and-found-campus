@@ -137,7 +137,7 @@ async function seed() {
       description: 'Lost my blue Milton stainless steel water bottle near the basketball court during evening practice.',
       lostDate: '2026-11-03',
       lostLocation: 'Sports Complex',
-      imageUrl: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80',
+      imageUrl: '/images/items/bottle.jpg',
       imagePublicId: '',
       identifyingDetails: 'Has a small scratch near the base and black paracord handle strap.',
       status: 'ACTIVE',
@@ -153,7 +153,7 @@ async function seed() {
       description: 'Misplaced black graphing calculator in Lecture Hall 204 after calculus quiz.',
       lostDate: '2026-11-04',
       lostLocation: 'Engineering Block A',
-      imageUrl: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=600&q=80',
+      imageUrl: '/images/items/calculator.jpg',
       imagePublicId: '',
       identifyingDetails: 'Initials P.P. written in silver marker inside the slide cover.',
       status: 'ACTIVE',
@@ -179,7 +179,7 @@ async function seed() {
       foundDate: '2026-11-04',
       foundTime: '09:30',
       foundLocation: 'Main Library',
-      imageUrl: 'https://images.unsplash.com/photo-1578574577315-3fbeb0cecdc2?w=600&q=80',
+      imageUrl: '/images/items/id-card.jpg',
       imagePublicId: '',
       hiddenIdentifyingDetails: 'Card holder lanyard is navy blue with 2024 orientation badge; barcode ends in 9844.',
       custodyOffice: 'Campus Security Desk (Block 29)',
@@ -203,7 +203,7 @@ async function seed() {
       foundDate: '2026-11-05',
       foundTime: '14:15',
       foundLocation: 'Engineering Block B',
-      imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80',
+      imageUrl: '/images/items/laptop.jpg',
       imagePublicId: '',
       hiddenIdentifyingDetails: 'Space Shuttle sticker under trackpad corner; blue spiral notebook inside front sleeve.',
       custodyOffice: 'Campus Security Desk (Block 29)',
@@ -227,7 +227,7 @@ async function seed() {
       foundDate: '2026-11-02',
       foundTime: '13:00',
       foundLocation: 'Central Cafeteria',
-      imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80',
+      imageUrl: '/images/items/smartphone.jpg',
       imagePublicId: '',
       hiddenIdentifyingDetails: 'Lock-screen wallpaper shows an astronaut floating in space; small chip at top-right bezel.',
       custodyOffice: 'Campus Security Desk (Block 29)',
@@ -251,7 +251,7 @@ async function seed() {
       foundDate: '2026-11-01',
       foundTime: '18:20',
       foundLocation: 'Hostel A',
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+      imageUrl: '/images/items/keys.jpg',
       imagePublicId: '',
       hiddenIdentifyingDetails: 'Key tag labeled Room 312B.',
       custodyOffice: 'Campus Security Desk (Block 29)',
@@ -295,12 +295,12 @@ async function seed() {
   console.log('✅ DATABASE SEEDING COMPLETED SUCCESSFULLY!')
   console.log('-----------------------------------------------')
   console.log('Admin Portal (/admin/login):')
-  console.log('  • Admin:    admin@campus.edu / Admin@123')
-  console.log('  • Security: security@campus.edu / Security@123')
+  console.log('  • Admin:    STAFF-001 / Admin@123 (admin@campus.edu)')
+  console.log('  • Security: SEC-104   / Security@123 (security@campus.edu)')
   console.log('Student Portal (/login):')
-  console.log('  • Student A: rahul.sharma@campus.edu / Student@123 (Reg: 12104582)')
-  console.log('  • Student B: priya.patel@campus.edu  / Student@123 (Reg: 12109844)')
-  console.log('  • Student C: ankit.verma@campus.edu  / Student@123 (Reg: 12107731)')
+  console.log('  • Student A: 12104582 / Student@123 (Rahul Sharma)')
+  console.log('  • Student B: 12109844 / Student@123 (Priya Patel)')
+  console.log('  • Student C: 12107731 / Student@123 (Ankit Verma)')
   console.log('===============================================\n')
 
   await mongoose.disconnect()

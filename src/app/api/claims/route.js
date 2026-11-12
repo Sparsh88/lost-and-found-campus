@@ -8,6 +8,7 @@ import { ClaimCreateSchema, formatZodError } from '@/lib/validators'
 import { generateUniqueCode } from '@/lib/idGenerator'
 import { checkRateLimit } from '@/lib/rateLimit'
 import { readFromGridFS } from '@/lib/uploads'
+import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
 
 export const dynamic = 'force-dynamic'
@@ -54,7 +55,11 @@ export async function GET(request) {
             category: c.foundItemId.category,
             foundLocation: c.foundItemId.foundLocation,
             foundDate: c.foundItemId.foundDate,
-            imageUrl: c.foundItemId.imageUrl,
+            imageUrl: resolveItemImage(
+              c.foundItemId.itemName,
+              c.foundItemId.category,
+              c.foundItemId.imageUrl
+            ),
             custodyOffice: c.foundItemId.custodyOffice,
             status: c.foundItemId.status,
             handoverInfo: c.foundItemId.handoverInfo,

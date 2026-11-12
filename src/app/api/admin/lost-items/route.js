@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import { requireAdmin } from '@/lib/auth'
+import { resolveItemImage } from '@/lib/itemImages'
 import LostItem from '@/models/LostItem'
 
 export const dynamic = 'force-dynamic'
@@ -26,7 +27,7 @@ export async function GET(request) {
         description: item.description,
         lostDate: item.lostDate,
         lostLocation: item.lostLocation,
-        imageUrl: item.imageUrl,
+        imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
         identifyingDetails: item.identifyingDetails || '',
         status: item.status,
         finderSubmissionsCount: item.finderSubmissionsCount || 0,

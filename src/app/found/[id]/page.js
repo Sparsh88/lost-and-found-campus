@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import StatusBadge from '@/components/ui/StatusBadge'
 import CategoryBadge from '@/components/ui/CategoryBadge'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { getSuggestedItemImage, resolveItemImage } from '@/lib/itemImages'
 
 function FoundItemDetailsContent() {
   const { id } = useParams()
@@ -195,11 +195,11 @@ function FoundItemDetailsContent() {
 
       <div className="bg-softSand rounded-xl border border-lightGray overflow-hidden shadow-sm">
         <img
-          src={item.imageUrl || DEFAULT_ITEM_IMAGE}
+          src={resolveItemImage(item.itemName, item.category, item.imageUrl)}
           alt={item.itemName}
           onError={(e) => {
             e.currentTarget.onerror = null
-            e.currentTarget.src = DEFAULT_ITEM_IMAGE
+            e.currentTarget.src = getSuggestedItemImage(item.itemName, item.category)
           }}
           className="w-full h-64 sm:h-80 object-cover"
         />

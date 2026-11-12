@@ -5,7 +5,7 @@ import FoundItem from '@/models/FoundItem'
 import Claim from '@/models/Claim'
 import { getAuthenticatedUser, requireUser, STUDENT_COOKIE_NAME } from '@/lib/auth'
 import { FoundItemUpdateSchema, formatZodError } from '@/lib/validators'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { resolveItemImage } from '@/lib/itemImages'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,7 +76,7 @@ export async function GET(request, { params }) {
         foundTime: item.foundTime || '',
         foundLocation: item.foundLocation,
         location: item.foundLocation,
-        imageUrl: item.imageUrl || DEFAULT_ITEM_IMAGE,
+        imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
         custodyOffice: item.custodyOffice || 'Campus Security Desk (Block 29)',
         shelfBin: item.shelfBin || 'Unassigned',
         status: item.status,
@@ -145,10 +145,14 @@ export async function PATCH(request, { params }) {
 
     for (const key of studentEditable) {
       if (validation.data[key] !== undefined) {
-        item[key] =
-          validation.data[key] || (key === 'imageUrl' ? DEFAULT_ITEM_IMAGE : validation.data[key])
+        item[key] = validation.data[key]
       }
     }
+    item.imageUrl = resolveItemImage(
+      item.itemName,
+      item.category,
+      validation.data.imageUrl !== undefined ? validation.data.imageUrl : item.imageUrl
+    )
 
     await item.save()
 

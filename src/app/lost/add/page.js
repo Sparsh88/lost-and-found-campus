@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ITEM_CATEGORIES, CAMPUS_LOCATIONS, DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from '@/lib/constants'
+import { getSuggestedItemImage, resolveItemImage } from '@/lib/itemImages'
 
 export default function AddLostItemPage() {
   const router = useRouter()
@@ -95,7 +96,7 @@ export default function AddLostItemPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          imageUrl: formData.imageUrl.trim() || DEFAULT_ITEM_IMAGE,
+          imageUrl: resolveItemImage(formData.itemName, formData.category, formData.imageUrl),
         }),
       })
 
@@ -302,13 +303,22 @@ export default function AddLostItemPage() {
             placeholder="https://example.com/item.jpg"
             className="w-full bg-white border border-lightGray rounded-lg px-3 py-2 text-xs text-charcoal focus:ring-2 focus:ring-skyBlue focus:outline-none"
           />
-          {formData.imageUrl && (
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-medium text-slateGray">
+              {formData.imageUrl.trim()
+                ? 'Uploaded / custom photo preview:'
+                : `Auto-matched photo for "${formData.itemName.trim() || formData.category}":`}
+            </p>
             <img
-              src={formData.imageUrl}
-              alt="Preview"
-              className="h-32 w-full object-cover rounded-lg border border-lightGray"
+              src={resolveItemImage(formData.itemName, formData.category, formData.imageUrl)}
+              alt={formData.itemName || 'Item Preview'}
+              onError={(e) => {
+                e.currentTarget.onerror = null
+                e.currentTarget.src = getSuggestedItemImage(formData.itemName, formData.category)
+              }}
+              className="h-36 w-full object-cover rounded-lg border border-lightGray"
             />
-          )}
+          </div>
         </div>
 
         <button

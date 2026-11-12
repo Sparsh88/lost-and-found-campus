@@ -6,6 +6,7 @@ import FoundItem from '@/models/FoundItem'
 import { requireUser } from '@/lib/auth'
 import { ClaimStudentResponseSchema, formatZodError } from '@/lib/validators'
 import { readFromGridFS } from '@/lib/uploads'
+import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
 
 export const dynamic = 'force-dynamic'
@@ -57,6 +58,16 @@ export async function GET(request, { params }) {
       claim: {
         ...claim,
         id: claim._id.toString(),
+        foundItemId: claim.foundItemId
+          ? {
+              ...claim.foundItemId,
+              imageUrl: resolveItemImage(
+                claim.foundItemId.itemName,
+                claim.foundItemId.category,
+                claim.foundItemId.imageUrl
+              ),
+            }
+          : null,
       },
     })
   } catch (error) {

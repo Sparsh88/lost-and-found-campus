@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import { requireAdmin } from '@/lib/auth'
+import { resolveItemImage } from '@/lib/itemImages'
 import FoundItem from '@/models/FoundItem'
 import Claim from '@/models/Claim'
 
@@ -67,6 +68,7 @@ export async function GET(request) {
         return {
           ...item,
           id,
+          imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
           totalClaimants: breakdown.total,
           claimBreakdown: breakdown,
         }

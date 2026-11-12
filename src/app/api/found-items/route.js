@@ -4,7 +4,7 @@ import FoundItem from '@/models/FoundItem'
 import { getAuthenticatedUser, requireUser, STUDENT_COOKIE_NAME } from '@/lib/auth'
 import { FoundItemCreateSchema, formatZodError } from '@/lib/validators'
 import { generateUniqueCode } from '@/lib/idGenerator'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
 
 export const dynamic = 'force-dynamic'
@@ -68,7 +68,7 @@ export async function GET(request) {
       foundTime: item.foundTime || '',
       foundLocation: item.foundLocation,
       location: item.foundLocation,
-      imageUrl: item.imageUrl || DEFAULT_ITEM_IMAGE,
+      imageUrl: resolveItemImage(item.itemName, item.category, item.imageUrl),
       custodyOffice: item.custodyOffice || 'Campus Security Desk (Block 29)',
       shelfBin: item.shelfBin || 'Unassigned',
       status: item.status,
@@ -117,7 +117,11 @@ export async function POST(request) {
       foundDate: validation.data.foundDate,
       foundTime: validation.data.foundTime || '',
       foundLocation: validation.data.foundLocation,
-      imageUrl: validation.data.imageUrl || DEFAULT_ITEM_IMAGE,
+      imageUrl: resolveItemImage(
+        validation.data.itemName,
+        validation.data.category,
+        validation.data.imageUrl
+      ),
       imagePublicId: validation.data.imagePublicId || '',
       hiddenIdentifyingDetails: validation.data.hiddenIdentifyingDetails || '',
       custodyOffice: validation.data.custodyOffice || 'Campus Security Desk (Block 29)',

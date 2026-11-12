@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Wristwatch and Eyeglasses Accessories">
+  <defs>
+    <linearGradient id="tableBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6f2eb" />
+      <stop offset="100%" stop-color="#e7dfd3" />
+    </linearGradient>
+    <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <filter id="accShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.16" />
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#tableBg)" />
+  <ellipse cx="265" cy="485" rx="115" ry="24" fill="#c8bca9" opacity="0.45" />
+  <ellipse cx="520" cy="455" rx="195" ry="26" fill="#c8bca9" opacity="0.45" />
+
+  <!-- Wristwatch -->
+  <g transform="translate(190 95)" filter="url(#accShadow)">
+    <!-- Straps -->
+    <rect x="44" y="0" width="68" height="145" rx="14" fill="#334155" />
+    <rect x="44" y="255" width="68" height="145" rx="14" fill="#334155" />
+    <rect x="64" y="24" width="28" height="16" rx="4" fill="#94a3b8" />
+    <!-- Crown -->
+    <rect x="150" y="188" width="14" height="24" rx="5" fill="#94a3b8" />
+    <!-- Case -->
+    <circle cx="78" cy="200" r="82" fill="#e2e8f0" stroke="#94a3b8" stroke-width="5" />
+    <circle cx="78" cy="200" r="68" fill="url(#dialGrad)" />
+    <!-- Hour Markers -->
+    <line x1="78" y1="142" x2="78" y2="152" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
+    <line x1="78" y1="248" x2="78" y2="258" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
+    <line x1="20" y1="200" x2="30" y2="200" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
+    <line x1="126" y1="200" x2="136" y2="200" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
+    <!-- Hands -->
+    <line x1="78" y1="200" x2="78" y2="158" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" />
+    <line x1="78" y1="200" x2="114" y2="218" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+    <circle cx="78" cy="200" r="6" fill="#f8fafc" />
+  </g>
+
+  <!-- Eyeglasses -->
+  <g transform="translate(335 235) rotate(-8)" filter="url(#accShadow)">
+    <!-- Temple Arms -->
+    <path d="M22 48L108 -18c10-8 24-6 34 4" fill="none" stroke="#1e293b" stroke-width="11" stroke-linecap="round" />
+    <path d="M318 48L390 -18c10-8 24-6 34 4" fill="none" stroke="#1e293b" stroke-width="11" stroke-linecap="round" />
+    <!-- Lenses & Frame -->
+    <rect x="12" y="34" width="128" height="92" rx="34" fill="#ffffff" fill-opacity="0.45" stroke="#0f172a" stroke-width="14" />
+    <rect x="190" y="34" width="128" height="92" rx="34" fill="#ffffff" fill-opacity="0.45" stroke="#0f172a" stroke-width="14" />
+    <!-- Bridge -->
+    <path d="M140 62c16-14 34-14 50 0" fill="none" stroke="#0f172a" stroke-width="14" stroke-linecap="round" />
+    <!-- Lens Glare -->
+    <line x1="38" y1="54" x2="62" y2="104" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.65" />
+    <line x1="216" y1="54" x2="240" y2="104" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.65" />
+  </g>
+</svg>

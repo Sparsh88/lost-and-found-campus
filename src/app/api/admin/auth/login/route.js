@@ -31,14 +31,23 @@ export async function POST(request) {
       return NextResponse.json({ error: formatZodError(validation) }, { status: 400 })
     }
 
-    const { email, password } = validation.data
-    const cleanEmail = email.toLowerCase().trim()
+    const { registrationNumber, adminId, identifier, email, password } = validation.data
+    const rawIdentifier = (registrationNumber || adminId || identifier || email || '').trim()
 
     await connectDB()
 
-    const user = await User.findOne({ email: cleanEmail }).select('+passwordHash')
+    let user = null
+    if (rawIdentifier.includes('@')) {
+      user = await User.findOne({ email: rawIdentifier.toLowerCase() }).select('+passwordHash')
+    } else {
+      const cleanId = rawIdentifier.toUpperCase()
+      user = await User.findOne({
+        $or: [{ registrationNumber: cleanId }, { studentId: cleanId }],
+      }).select('+passwordHash')
+    }
+
     if (!user) {
-      return NextResponse.json({ error: 'Invalid administrator credentials.' }, { status: 401 })
+      return NextResponse.json({ error: 'Invalid Admin ID or password.' }, { status: 401 })
     }
 
     if (user.isBlocked) {
@@ -50,7 +59,7 @@ export async function POST(request) {
 
     const isMatch = await verifyPassword(password, user.passwordHash)
     if (!isMatch) {
-      return NextResponse.json({ error: 'Invalid administrator credentials.' }, { status: 401 })
+      return NextResponse.json({ error: 'Invalid Admin ID or password.' }, { status: 401 })
     }
 
     if (!isAdminRole(user.role)) {
@@ -59,7 +68,7 @@ export async function POST(request) {
         action: 'ADMIN_LOGIN_DENIED',
         targetModel: 'User',
         targetId: user._id.toString(),
-        details: `Student account ${user.email} attempted admin portal login.`,
+        details: `Student account ${user.registrationNumber || user.email} attempted admin portal login.`,
         request,
       })
       return NextResponse.json(
@@ -88,7 +97,7 @@ export async function POST(request) {
       action: 'ADMIN_LOGIN',
       targetModel: 'User',
       targetId: adminPayload.id,
-      details: `Administrator ${adminPayload.email} signed in.`,
+      details: `Administrator ${adminPayload.registrationNumber || adminPayload.email} signed in.`,
       request,
     })
 

@@ -11,11 +11,11 @@ export default function LoginPage() {
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Login form state
-  const [loginEmail, setLoginEmail] = useState('')
+  // Login form state (University Registration No + Password)
+  const [loginRegNumber, setLoginRegNumber] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
 
-  // Register form state
+  // Register form state (Full Details)
   const [regName, setRegName] = useState('')
   const [regEmail, setRegEmail] = useState('')
   const [regNumber, setRegNumber] = useState('')
@@ -34,7 +34,7 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: loginEmail.trim(),
+          registrationNumber: loginRegNumber.trim(),
           password: loginPassword,
         }),
       })
@@ -102,10 +102,12 @@ export default function LoginPage() {
       }
 
       window.dispatchEvent(new Event('authChange'))
-      setSuccess('Account created successfully! Welcome to Campus Lost & Found.')
+      setSuccess(
+        `Student account enrolled (${data.user?.registrationNumber})! Use your Registration No & password for future logins.`
+      )
       setTimeout(() => {
         router.push('/found')
-      }, 500)
+      }, 650)
     } catch {
       setError('Unable to reach registration server.')
       setLoading(false)
@@ -123,7 +125,9 @@ export default function LoginPage() {
             Campus Lost &amp; Found
           </h1>
           <p className="text-sm text-slateGray mt-1">
-            {tab === 'login' ? 'Sign in with your university student account' : 'Register a new campus student account'}
+            {tab === 'login'
+              ? 'Sign in with your university registration number & password'
+              : 'Enroll your student profile with university details'}
           </p>
         </div>
 
@@ -170,21 +174,21 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-1">
-                Campus Email
+                University Registration Number *
               </label>
               <input
-                type="email"
+                type="text"
                 required
-                placeholder="rahul.sharma@campus.edu"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+                placeholder="e.g. 12104582"
+                value={loginRegNumber}
+                onChange={(e) => setLoginRegNumber(e.target.value)}
+                className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none uppercase"
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-1">
-                Password
+                Password *
               </label>
               <input
                 type="password"
@@ -201,7 +205,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
             >
-              {loading ? 'Authenticating...' : 'Sign In'}
+              {loading ? 'Authenticating...' : 'Sign In with Registration No'}
             </button>
           </form>
         ) : (
@@ -220,24 +224,10 @@ export default function LoginPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-charcoal mb-1">
-                Campus Email *
-              </label>
-              <input
-                type="email"
-                required
-                placeholder="student@campus.edu"
-                value={regEmail}
-                onChange={(e) => setRegEmail(e.target.value)}
-                className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
-              />
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-semibold text-charcoal mb-1">
-                  Registration No *
+                  University Reg No *
                 </label>
                 <input
                   type="text"
@@ -245,7 +235,7 @@ export default function LoginPage() {
                   placeholder="e.g. 12104582"
                   value={regNumber}
                   onChange={(e) => setRegNumber(e.target.value)}
-                  className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+                  className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none uppercase"
                 />
               </div>
               <div>
@@ -265,7 +255,21 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-1">
-                Password *
+                Campus Email *
+              </label>
+              <input
+                type="email"
+                required
+                placeholder="student@campus.edu"
+                value={regEmail}
+                onChange={(e) => setRegEmail(e.target.value)}
+                className="w-full bg-warmWhite border border-lightGray rounded-lg px-3 py-2 text-sm text-charcoal placeholder-slateGray/60 focus:ring-2 focus:ring-skyBlue focus:border-skyBlue focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-charcoal mb-1">
+                Create Password *
               </label>
               <input
                 type="password"
@@ -296,7 +300,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-electricBlue hover:bg-electricBlue-hover disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm"
             >
-              {loading ? 'Creating Account...' : 'Register Campus Account'}
+              {loading ? 'Enrolling Account...' : 'Enroll Student Account'}
             </button>
           </form>
         )}

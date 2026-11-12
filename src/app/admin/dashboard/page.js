@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Bell } from 'lucide-react'
 import StatusBadge from '@/components/ui/StatusBadge'
 import CategoryBadge from '@/components/ui/CategoryBadge'
-import { DEFAULT_ITEM_IMAGE } from '@/lib/constants'
+import { resolveItemImage } from '@/lib/itemImages'
 
 export default function AdminDashboardPage() {
   const router = useRouter()
@@ -895,7 +895,7 @@ export default function AdminDashboardPage() {
                       <td className="p-3">
                         <div className="flex items-center gap-2.5">
                           <img
-                            src={item.imageUrl || DEFAULT_ITEM_IMAGE}
+                            src={resolveItemImage(item.itemName, item.category, item.imageUrl)}
                             alt={item.itemName}
                             className="w-12 h-12 rounded-lg object-cover border border-lightGray shrink-0"
                           />
@@ -1023,7 +1023,11 @@ export default function AdminDashboardPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={claimWorkspace.foundItem.imageUrl || DEFAULT_ITEM_IMAGE}
+                          src={resolveItemImage(
+                            claimWorkspace.foundItem.itemName,
+                            claimWorkspace.foundItem.category,
+                            claimWorkspace.foundItem.imageUrl
+                          )}
                           alt={claimWorkspace.foundItem.itemName}
                           className="w-16 h-16 rounded-lg object-cover border border-lightGray"
                         />
