@@ -1,438 +1,370 @@
 # 🎓 Campus Lost & Found – P04
 
-> **A Next.js & React-based campus Lost and Found Management System developed as a group project.**
+<p align="center">
+  <img src="https://img.shields.io/badge/Project_Code-P04-blue?style=for-the-badge&logo=codeforces" alt="Project Code P04" />
+  <img src="https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js" alt="Next.js 14" />
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react" alt="React 18" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/MongoDB_Atlas-Mongoose-47A248?style=for-the-badge&logo=mongodb" alt="MongoDB Atlas" />
+  <img src="https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel" alt="Vercel Deployment" />
+</p>
 
-A full-featured web application connecting students who lose belongings with people who find them and campus security authorities — across a 600-acre university campus.
+<h3 align="center">
+  A Full-Stack, Role-Based Lost &amp; Found Management System for a 600-Acre University Campus
+</h3>
+
+<p align="center">
+  Developed as an academic capstone group project at <strong>Lovely Professional University (LPU)</strong> to digitalize and streamline lost property retrieval, ownership verification, security custody management, and handover workflows.
+</p>
+
+<p align="center">
+  🚀 <strong><a href="https://lost-and-found-campus-iota.vercel.app/">View Live Application</a></strong> &nbsp;•&nbsp; 
+  💻 <strong><a href="https://github.com/Sparsh88/lost-and-found-campus">GitHub Repository</a></strong> &nbsp;•&nbsp;
+  📊 <strong><a href="./campus-workflow-diagram.svg">System Workflow SVG</a></strong>
+</p>
 
 ---
 
-## 📋 Table of Contents
+## 📌 Table of Contents
 
-- [Project Overview](#-project-overview)
-- [Technology Stack](#-technology-stack)
-- [Project Structure](#-project-structure)
-- [Module Ownership](#-module-ownership)
-- [Getting Started](#-getting-started)
-- [Running the Application](#-running-the-application)
-- [Team Collaboration Guide](#-team-collaboration-guide)
-- [Git Branch Strategy](#-git-branch-strategy)
-- [GitHub Setup & Pushing](#-github-setup--pushing)
-- [Inviting Collaborators](#-inviting-collaborators)
-- [MongoDB Integration](#-mongodb-integration-future)
-- [Contributing Guidelines](#-contributing-guidelines)
+- [Executive Summary](#-executive-summary)
+- [Key Features](#-key-features)
+- [System Architecture & Workflow](#-system-architecture--workflow)
+- [Tech Stack](#-tech-stack)
+- [Live Demo & Test Accounts](#-live-demo--test-accounts)
+- [Project Directory Structure](#-project-directory-structure)
+- [Database Schema & Models](#-database-schema--models)
+- [REST API Reference](#-rest-api-reference)
+- [Getting Started & Local Setup](#-getting-started--local-setup)
+- [Environment Variables](#-environment-variables)
+- [Security & Engineering Practices](#-security--engineering-practices)
+- [Team Collaboration & Module Ownership](#-team-collaboration--module-ownership)
+- [License & Academic Declaration](#-license--academic-declaration)
 
 ---
 
-## 🌟 Project Overview
+## 💡 Executive Summary
 
-| Feature | Description |
-|---|---|
-| **Project Code** | P04 |
-| **Project Title** | Lost on a 600-Acre Campus: Lost-and-Found Management System |
-| **Type** | College Group Project |
-| **Framework** | Next.js 14 (App Router) |
-| **Database** | MongoDB (integration-ready) |
+### The Problem
+On a massive **600-acre campus** with over 30,000+ students, faculty members, and campus visitors, hundreds of essential personal belongings—such as student identity cards, laptops, smartphones, lab records, wallets, and room keys—are misplaced daily. Traditional recovery relies on fragmented WhatsApp broadcast groups, unofficial social media pages, or uncoordinated physical lost-and-found security counters. This leads to:
+1. Low recovery rates and prolonged delays in returning essential items.
+2. High susceptibility to fraudulent claims due to lack of ownership verification.
+3. Zero centralized accountability for security desks holding found property.
+4. Privacy risks associated with students sharing personal phone numbers publicly online.
 
-### Modules
+### The Solution
+**Campus Lost & Found (P04)** is a full-stack, end-to-end web application that connects students, good samaritans, and campus security authorities into a single verified network. It features:
+- **Centralized Item Catalogs:** Real-time searchable directories for lost and found property.
+- **Strict Verification Claim Engine:** Fraud-resistant multi-step verification before item release.
+- **Custody & Handover Tracking:** Specific shelf/bin physical storage logging with digital handover receipts.
+- **Role-Based Access Control:** Distinct workspaces for Students, Campus Security Officers, and Chief Administrators.
+- **In-App Notifications & Community Karma:** Real-time status updates and incentives rewarding honest students.
 
-| Module | Service | Status |
+---
+
+## ✨ Key Features
+
+### 🎓 1. Student Portal
+- **Report Lost Belongings:** Submit detailed incident reports with category, brand, distinctive identifiers (stickers, serial numbers, wallpapers), last seen campus zone, date, and photos.
+- **Public Found Items Catalog:** Browse items recovered across campus with category pills, campus zone filters, and keyword search.
+- **Direct Found Item Submission:** Log an item you stumbled upon, choose whether to keep custody until claimed or turn it in to the nearest Campus Security Desk.
+- **"My Reports" Dashboard:** Personal command center tracking all reported lost items, found submissions, active claims, and earned community **Karma Points**.
+- **Real-Time In-App Notifications:** Automatic alerts whenever a claim status changes (Approved, Additional Info Requested, Handover Ready).
+
+### 🛡️ 2. Verification & Anti-Fraud Claim Engine
+- **Ownership Verification Questions:** Claimants must supply verifiable proof of ownership (e.g. device password/wallpaper description, matching registration numbers, hidden marks) before contact or handover details are unlocked.
+- **Private File Attachments:** Claimant can upload bills, purchase invoices, or secondary identification securely.
+- **Multi-State Claim Lifecycle:** Tracks states through `PENDING` ➔ `ADDITIONAL_INFO_REQUESTED` ➔ `APPROVED` / `REJECTED` ➔ `COMPLETED`.
+
+### 🏢 3. Campus Security & Custody Management
+- **Physical Inventory Binning:** Records the precise custody station (e.g., *Main Security Office*, *Engineering Block A Desk*, *Gate 1*) and internal bin/shelf IDs (e.g., `Shelf B-12`).
+- **Official Handover Digital Receipts:** Formalizes the item return with claimant ID verification, security officer badge recording, and digital timestamping.
+- **Item Reservation Status:** Prevents duplicate handovers by switching items from `AVAILABLE` to `RESERVED_FOR_HANDOVER` during active claims.
+
+### 📊 4. Admin Control Center & Audit Trails
+- **System Overview Analytics:** Real-time metrics on total reports, active lost items, items in custody, and completed returns.
+- **Tamper-Evident Audit Logs:** Automatically logs critical actions (claim reviews, item status changes, inventory updates, user blocking).
+- **User Management:** Ability to block abusive accounts and manage administrative access.
+
+---
+
+## 🏗️ System Architecture & Workflow
+
+```mermaid
+flowchart TD
+    subgraph Students ["🎓 Campus Students"]
+        A1["Lost an Item"] -->|File Report| B1["Lost Item Registry"]
+        A2["Found an Item"] -->|Submit Item| B2["Found Item Registry"]
+        A3["Browses Catalog"] -->|Finds Match| C1["Submit Ownership Claim"]
+    end
+
+    subgraph Platform ["⚡ Campus Lost & Found System"]
+        B1 -.->|Smart Match Suggestion| B2
+        B2 -->|Store in Physical Inventory| D1["Custody Desk & Shelf/Bin"]
+        C1 -->|Encrypted Proof Submission| D2["Verification Queue"]
+    end
+
+    subgraph Security ["🛡️ Security & Administration"]
+        D2 -->|Review Evidence| E1{"Verify Ownership"}
+        E1 -->|Insufficient Proof| E2["Request More Details"]
+        E1 -->|False Claim| E3["Reject Claim"]
+        E1 -->|Verified Match| E4["Approve Claim & Reserve Item"]
+        E4 -->|Physical Handover at Post| F1["Digital Handover Receipt"]
+        F1 --> G1["Item Status: RETURNED"]
+        F1 --> G2["Audit Log & Karma Awarded"]
+    end
+
+    E2 -.->|In-App Alert| A3
+    E4 -.->|Handover Code Notification| A3
+```
+
+> 💡 *An interactive vector diagram viewer is included in the project at [`workflow-diagram.html`](./workflow-diagram.html) and [`campus-workflow-diagram.svg`](./campus-workflow-diagram.svg).*
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technologies Used | Description |
 |---|---|---|
-| **Module 1** | Lost Item Service | 🔧 In Progress (Teammate 1) |
-| **Module 2** | Found Item Service | ✅ Implemented (You) |
-| **Module 3** | Claim & Verification Service | 🔧 In Progress (Teammate 3) |
+| **Frontend Framework** | **Next.js 14** (App Router) | Server-Side Rendering (SSR), Server Components, dynamic routing |
+| **User Interface** | **React 18** + **Tailwind CSS** | Accessible, responsive, mobile-optimized UI styled with utility classes |
+| **Icons & Feedback** | **Lucide React** + **Sonner** | Modern iconography and lightweight stacked toast notifications |
+| **Backend & APIs** | **Next.js API Routes** | RESTful Node.js endpoints with runtime schema validation |
+| **Database & ODM** | **MongoDB Atlas** + **Mongoose** | Managed cloud NoSQL database with strict schema models and indexing |
+| **Authentication** | **JWT (`jose`)** + **`bcryptjs`** | Secure HTTP-only cookies, salted password hashing, and role guard middleware |
+| **Validation & Security** | **Zod** + **Rate Limiting** | Strict request body validation and API rate limiting against abuse |
+| **Deployment & Hosting** | **Vercel** | Global edge network with automatic CI/CD deployment from GitHub |
 
 ---
 
-## 🛠 Technology Stack
+## 🚀 Live Demo & Test Accounts
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | Next.js 14 (App Router), React 18 |
-| **Language** | JavaScript (ES2022+) |
-| **Styling** | Tailwind CSS |
-| **Icons** | Lucide React |
-| **Backend** | Node.js (Next.js API Routes) |
-| **Database** | MongoDB + Mongoose (integration-ready) |
-| **Version Control** | Git & GitHub |
+You can test the production application right away without manual setup:
 
----
+🌐 **Live URL:** [https://lost-and-found-campus-iota.vercel.app/](https://lost-and-found-campus-iota.vercel.app/)
 
-## 📁 Project Structure
+The database includes pre-seeded accounts to demonstrate role-based permissions:
 
-```
-campus-lost-and-found/
-│
-├── src/
-│   ├── app/                          # Next.js App Router pages
-│   │   ├── layout.js                 # Root layout (Navbar + Footer)
-│   │   ├── page.js                   # Home / Landing page
-│   │   ├── globals.css               # Global styles + Tailwind
-│   │   │
-│   │   ├── lost/                     # MODULE 1 – Lost Item Service
-│   │   │   └── page.js               # Lost items listing (Teammate 1)
-│   │   │
-│   │   ├── found/                    # MODULE 2 – Found Item Service ✅
-│   │   │   ├── page.js               # Found items listing + search + filters
-│   │   │   ├── add/
-│   │   │   │   └── page.js           # Report a found item form
-│   │   │   └── [id]/
-│   │   │       └── page.js           # Found item details page
-│   │   │
-│   │   ├── claims/                   # MODULE 3 – Claim & Verification
-│   │   │   └── page.js               # Claims service (Teammate 3)
-│   │   │
-│   │   └── dashboard/
-│   │       └── page.js               # Shared overview dashboard
-│   │
-│   ├── components/                   # Shared reusable components
-│   │   ├── Navbar.jsx                # Navigation bar (all modules)
-│   │   ├── Footer.jsx                # Footer (all modules)
-│   │   └── ui/
-│   │       ├── FoundItemCard.jsx     # Card for found items
-│   │       ├── StatusBadge.jsx       # Status pill badge
-│   │       └── CategoryBadge.jsx     # Category pill badge
-│   │
-│   ├── modules/                      # Module-specific business logic
-│   │   ├── lost/                     # Teammate 1 – Lost module logic
-│   │   │   └── index.js
-│   │   ├── found/                    # You – Found module logic ✅
-│   │   │   ├── data.js               # Mock data + constants
-│   │   │   └── store.js              # In-memory state store
-│   │   └── claims/                   # Teammate 3 – Claims module logic
-│   │       └── index.js
-│   │
-│   └── lib/                          # Shared utilities & helpers
-│       ├── mongodb.js                # MongoDB connection helper
-│       └── utils.js                  # Shared utility functions
-│
-├── public/                           # Static assets (images, favicon)
-├── .env.example                      # Environment variable template
-├── .gitignore                        # Git ignore rules
-├── jsconfig.json                     # Path aliases (@/...)
-├── next.config.js                    # Next.js configuration
-├── tailwind.config.js                # Tailwind CSS configuration
-├── postcss.config.js                 # PostCSS configuration
-├── package.json                      # Dependencies & scripts
-└── README.md                         # This file
-```
-
----
-
-## 👥 Module Ownership
-
-| Branch | Module | Owner | Pages |
+| Role | Email Address | Password | Permissions & Scope |
 |---|---|---|---|
-| `module-1-lost` | Module 1 – Lost Item Service | **Teammate 1** | `/lost`, `/lost/add`, `/lost/[id]` |
-| `module-2-found` | Module 2 – Found Item Service | **You (Me)** | `/found`, `/found/add`, `/found/[id]` |
-| `module-3-claims` | Module 3 – Claim & Verification | **Teammate 3** | `/claims`, `/claims/[id]` |
-
-> **Important:** Each teammate should only modify files inside their own module folder (`src/modules/<module>/`) and their own app pages (`src/app/<module>/`). Shared components (`src/components/`) should only be modified by mutual agreement.
+| **Chief Administrator** | `admin@campus.edu` | `Admin@123` | Full dashboard, audit logs, user management, global oversight |
+| **Campus Security Officer** | `security@campus.edu` | `Security@123` | Custody desk logging, claim approvals, handover receipt generation |
+| **Student** | `rahul.sharma@campus.edu` | `Student@123` | Report lost/found items, file claims, view personal reports & karma |
+| **Student (Alternate)** | `priya.patel@campus.edu` | `Student@123` | Secondary student account for simulating peer interactions |
 
 ---
 
-## 🚀 Getting Started
+## 📁 Project Directory Structure
+
+```text
+lost-and-found-campus/
+├── public/                       # Static public assets (campus images, logos)
+├── scripts/
+│   └── seed.js                   # Automated MongoDB Atlas seeder with demo dataset
+├── src/
+│   ├── app/                      # Next.js 14 App Router hierarchy
+│   │   ├── admin/                # Admin & Security management portals
+│   │   │   ├── dashboard/        # Operational overview, claims queue, audit logs
+│   │   │   └── login/            # Elevated staff login page
+│   │   ├── api/                  # RESTful API Route handlers
+│   │   │   ├── admin/            # Protected admin endpoints (claims, audit, handovers)
+│   │   │   ├── auth/             # Login, registration, token verification, session
+│   │   │   ├── claims/           # Claim filing, status updates, evidence review
+│   │   │   ├── found-items/      # Found item registration, search & filters
+│   │   │   ├── lost-items/       # Lost item reporting & listing
+│   │   │   ├── notifications/    # User in-app notifications
+│   │   │   └── uploads/          # Image and attachment handlers
+│   │   ├── claims/               # Public claim verification pages
+│   │   ├── dashboard/            # Student analytics & general overview
+│   │   ├── found/                # Found items directory, details, & report form
+│   │   ├── lost/                 # Lost items directory, details, & report form
+│   │   ├── my-reports/           # Personalized student submissions & claims
+│   │   ├── notifications/        # User notification inbox
+│   │   ├── globals.css           # Global Tailwind stylesheet
+│   │   ├── layout.js             # Root application shell (Navbar, Footer, Providers)
+│   │   └── page.js               # Landing page with hero, stats, and recent items
+│   ├── components/               # Reusable UI component library
+│   │   ├── ui/                   # Modular atoms (badges, cards, buttons)
+│   │   ├── Navbar.jsx            # Dynamic navigation bar with auth & notification status
+│   │   ├── Footer.jsx            # University footer & quick navigation
+│   │   └── FinderModal.jsx       # Direct contact / claim modal dialog
+│   ├── lib/                      # Shared server utilities & configurations
+│   │   ├── auth.js               # JWT sign/verify helpers & session cookie extraction
+│   │   ├── constants.js          # Campus zones, categories, and item statuses
+│   │   ├── mongodb.js            # Cached Mongoose connection instance
+│   │   ├── notifications.js      # System notification dispatcher
+│   │   └── validators.js         # Zod data schemas
+│   ├── models/                   # Mongoose Object Data Models
+│   │   ├── AuditLog.js           # Security action auditing
+│   │   ├── Claim.js              # Verification claims & evidence
+│   │   ├── FoundItem.js          # Found items & custody metadata
+│   │   ├── Handover.js           # Physical item release records
+│   │   ├── LostItem.js           # Lost item incident reports
+│   │   ├── Notification.js       # User notification documents
+│   │   └── User.js               # Campus accounts (Students, Security, Admin)
+│   └── modules/                  # Modular domain logic
+├── campus-workflow-diagram.svg   # Vector operational architecture diagram
+├── workflow-diagram.html         # Standalone diagram viewer
+├── package.json                  # NPM project manifest & dependencies
+└── tailwind.config.js            # Custom design tokens & theme configuration
+```
+
+---
+
+## 🗄️ Database Schema & Models
+
+The system is built on **8 strongly-typed Mongoose models**:
+
+| Model | Collection | Primary Responsibility |
+|---|---|---|
+| **`User`** | `users` | Stores student/staff profile, registration number, bcrypt password hash, role (`student`, `security`, `admin`), and karma score. |
+| **`LostItem`** | `lostitems` | Records details of misplaced property: `reportId`, name, category, campus location, date/time, description, image, and status (`ACTIVE`, `CLOSED`, `RETURNED`). |
+| **`FoundItem`** | `founditems` | Tracks discovered belongings: `foundId`, custody office, shelf/bin ID, finder details, contact disclosure preference, and status (`AVAILABLE`, `RESERVED_FOR_HANDOVER`, `RETURNED`, `CLOSED`). |
+| **`Claim`** | `claims` | Stores verification claims: `claimId`, foreign key references to `FoundItem` and claimant `User`, unique identifiers, proof answers, and review status. |
+| **`Handover`** | `handovers` | Official transfer receipt documenting handover officer ID, recipient registration number, verification notes, and exact timestamp. |
+| **`Notification`** | `notifications` | In-app alerts informing users when their claim progresses, evidence is requested, or matches are discovered. |
+| **`AuditLog`** | `auditlogs` | Immutable audit trail of administrative events for institutional accountability. |
+| **`FinderSubmission`** | `findersubmissions`| Light-weight peer inquiry records submitted by campus finders. |
+
+---
+
+## 🔌 REST API Reference
+
+The project provides structured REST API endpoints organized under Next.js App Router:
+
+### Authentication & Profiles
+- `POST /api/auth/register` — Register a student account with institutional ID.
+- `POST /api/auth/login` — Authenticate user and issue secure HTTP-only JWT cookie.
+- `POST /api/auth/logout` — Invalidate user session.
+- `GET  /api/auth/me` — Retrieve active user session and role profile.
+
+### Item Management
+- `GET  /api/lost-items` — List and filter lost items (category, campus location, date, keyword).
+- `POST /api/lost-items` — Create a new lost item incident report.
+- `GET  /api/lost-items/:id` — Retrieve specific lost item report details.
+- `GET  /api/found-items` — Browse found items available across campus.
+- `POST /api/found-items` — Register a found item and record custody info.
+- `GET  /api/found-items/:id` — Detailed found item record (with conditional finder contact privacy).
+
+### Claims & Verification
+- `POST /api/claims` — Submit an ownership claim with distinctive proof.
+- `GET  /api/claims/:id` — Fetch status of a filed claim.
+- `PATCH /api/admin/claims/:id` — Security officer reviews, approves, or requests more information on a claim.
+
+### Security Desk & Administration
+- `GET  /api/admin/overview` — Aggregated operational statistics and recovery rates.
+- `POST /api/admin/handovers` — Record formal item handover and release to student.
+- `GET  /api/admin/audit-logs` — Retrieve compliance audit trails.
+
+---
+
+## 💻 Getting Started & Local Setup
 
 ### Prerequisites
+- **Node.js**: `v18.17.0` or higher
+- **npm**: `v9.0.0` or higher
+- **MongoDB**: A free cloud instance on [MongoDB Atlas](https://www.mongodb.com/atlas) or a local MongoDB server (`mongodb://localhost:27017`)
 
-Make sure you have the following installed:
-
-- **Node.js** v18 or later — [Download](https://nodejs.org/)
-- **npm** (comes with Node.js)
-- **Git** — [Download](https://git-scm.com/)
-
-Check your versions:
-
+### 1. Clone Repository
 ```bash
-node --version    # Should be v18+
-npm --version     # Should be 9+
-git --version
-```
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/<your-username>/campus-lost-and-found.git
-cd campus-lost-and-found
+git clone https://github.com/Sparsh88/lost-and-found-campus.git
+cd lost-and-found-campus
 ```
 
 ### 2. Install Dependencies
-
 ```bash
 npm install
 ```
 
-### 3. Set Up Environment Variables
-
+### 3. Configure Environment Variables
+Create a `.env.local` file in the root directory:
 ```bash
-# Copy the example file
 cp .env.example .env.local
+```
+Fill in your configuration values:
+```env
+# MongoDB Connection String
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/campus-lost-and-found?retryWrites=true&w=majority
 
-# Edit .env.local and add your MongoDB URI (optional for now)
-# MONGODB_URI=mongodb+srv://...
+# JWT Secret for Session Security
+JWT_SECRET=your_super_secret_jwt_key_at_least_32_characters_long
+
+# Base Application URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Cloudinary (Optional - for direct cloud image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-### 4. Switch to Your Branch
-
+### 4. Seed the Database
+Populate the database with sample campus locations, initial categories, test accounts, lost reports, and found custody entries:
 ```bash
-# Teammate 1
-git checkout module-1-lost
-
-# You (Module 2)
-git checkout module-2-found
-
-# Teammate 3
-git checkout module-3-claims
+npm run seed
 ```
 
----
-
-## ▶️ Running the Application
-
-### Development Server
-
+### 5. Launch the Development Server
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-The page auto-updates when you save changes.
-
-### Production Build
-
-```bash
-npm run build
-npm run start
-```
-
-### Lint Check
-
-```bash
-npm run lint
-```
+Visit [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ---
 
-## 🤝 Team Collaboration Guide
+## ⚙️ Environment Variables
 
-### Step-by-Step Workflow for Each Teammate
-
-#### 1. Clone the Repository (first time only)
-
-```bash
-git clone https://github.com/<repo-owner>/campus-lost-and-found.git
-cd campus-lost-and-found
-npm install
-```
-
-#### 2. Switch to Your Branch
-
-```bash
-# Always work on YOUR module branch — never commit directly to main
-git checkout module-1-lost       # Teammate 1
-git checkout module-2-found      # You
-git checkout module-3-claims     # Teammate 3
-```
-
-#### 3. Pull Latest Changes Before Starting Work
-
-```bash
-# Pull the latest from your branch
-git pull origin module-2-found   # (replace with your branch name)
-
-# Also sync with main occasionally
-git fetch origin
-git merge origin/main
-```
-
-#### 4. Make Your Changes
-
-Edit only files in your module:
-- `src/app/<your-module>/` — Page files
-- `src/modules/<your-module>/` — Module logic
-
-#### 5. Stage and Commit Your Changes
-
-```bash
-# See what changed
-git status
-
-# Stage specific files (recommended)
-git add src/app/found/page.js
-git add src/modules/found/data.js
-
-# Or stage everything (use carefully)
-git add .
-
-# Commit with a meaningful message
-git commit -m "feat(module-2): add search functionality to found items listing"
-```
-
-**Commit Message Convention:**
-```
-feat(module-2): short description      ← new feature
-fix(module-2): short description       ← bug fix
-refactor(module-2): short description  ← code improvement
-docs: update README                    ← documentation
-```
-
-#### 6. Push Your Branch to GitHub
-
-```bash
-git push origin module-2-found   # (replace with your branch name)
-```
-
-#### 7. Create a Pull Request
-
-1. Go to the GitHub repository in your browser.
-2. Click **"Compare & pull request"** (shown after a push).
-3. Set **base branch** to `main` and **compare** to your module branch.
-4. Add a clear title and description of your changes.
-5. Request a review from a teammate.
-6. Click **"Create pull request"**.
-
-#### 8. Merge Approved Code into Main
-
-After all reviewers approve:
-1. Click **"Merge pull request"** on GitHub.
-2. Choose **"Squash and merge"** for a clean history.
-3. Delete the feature branch after merging (optional).
-
-#### 9. Sync Your Branch with Main After a Merge
-
-```bash
-git checkout module-2-found
-git fetch origin
-git merge origin/main
-git push origin module-2-found
-```
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `MONGODB_URI` | **Yes** | — | MongoDB Atlas or local connection URI. |
+| `JWT_SECRET` | **Yes** | — | Secret string utilized by `jose` to sign session cookies. |
+| `NEXT_PUBLIC_APP_URL` | No | `http://localhost:3000` | Canonical origin URL for client redirects and links. |
+| `CLOUDINARY_CLOUD_NAME` | No | — | Cloudinary cloud identifier for external image hosting. |
+| `CLOUDINARY_API_KEY` | No | — | Cloudinary API Key. |
+| `CLOUDINARY_API_SECRET` | No | — | Cloudinary API Secret. |
 
 ---
 
-## 🌿 Git Branch Strategy
+## 🔒 Security & Engineering Practices
 
-```
-main                    ← Stable, tested, integrated code only
-  │
-  ├── module-1-lost     ← Teammate 1: Lost Item Service
-  ├── module-2-found    ← You: Found Item Service
-  └── module-3-claims   ← Teammate 3: Claim & Verification
-```
-
-**Rules:**
-- ❌ Never commit directly to `main`
-- ✅ Always work on your module branch
-- ✅ Create a Pull Request to merge into `main`
-- ✅ At least one teammate must review before merging
-
----
-
-## 📤 GitHub Setup & Pushing
-
-### First-Time Push (Repository Owner)
-
-```bash
-# 1. Initialize git (already done)
-git init
-
-# 2. Add all files
-git add .
-
-# 3. Initial commit
-git commit -m "feat: initial project setup with Next.js App Router and Module 2 foundation"
-
-# 4. Rename branch to main
-git branch -M main
-
-# 5. Add GitHub remote (replace with your actual repo URL)
-git remote add origin https://github.com/<your-username>/campus-lost-and-found.git
-
-# 6. Push to GitHub
-git push -u origin main
-
-# 7. Create and push module branches
-git checkout -b module-1-lost
-git push origin module-1-lost
-
-git checkout -b module-2-found
-git push origin module-2-found
-
-git checkout -b module-3-claims
-git push origin module-3-claims
-
-# 8. Switch back to module-2-found to start your work
-git checkout module-2-found
-```
+1. **Authentication & Session Safety:**
+   - Stateless JWT tokens signed via `jose` and delivered via `HttpOnly`, `SameSite=Lax`, `Secure` cookies to defend against XSS and token exfiltration.
+2. **Password Cryptography:**
+   - Passwords hashed using `bcryptjs` with 12 salt rounds before persisting to MongoDB.
+3. **Privacy by Design:**
+   - Finder contact numbers and sensitive claimant answers are never exposed to public listing APIs. Contact details are only unlocked after verified security approval.
+4. **Input Sanitization & Schema Validation:**
+   - All inbound payloads are validated using `Zod` schemas to prevent payload injection and schema corruption.
+5. **Rate Limiting:**
+   - In-memory rate limiting shields authentication and reporting endpoints against automated spam.
+6. **Optimized Image Handling:**
+   - Next.js dynamic image fallbacks resolve category-specific assets if custom photographs are omitted.
 
 ---
 
-## 👤 Inviting Collaborators
+## 👥 Team Collaboration & Module Ownership
 
-To give your teammates access to the repository:
+This system was structured and engineered as a collaborative group capstone project (**Project Code: P04**):
 
-1. Go to your repository on GitHub: `https://github.com/<your-username>/campus-lost-and-found`
-2. Click the **Settings** tab (top right of the repository page)
-3. In the left sidebar, click **Collaborators** (under "Access")
-4. Click **"Add people"**
-5. Enter your teammate's **GitHub username or email address**
-6. Select the **role** — choose **"Write"** so they can push branches
-7. Click **"Add [username] to this repository"**
-8. Your teammate will receive an email invitation — they must **accept it**
+| Module | Service Scope | Primary Responsibilities |
+|---|---|---|
+| **Module 1** | **Lost Item Service** | Lost item reporting portal, category categorization, date/zone filtering, and public lost directory. |
+| **Module 2** | **Found Item Service** | Found item registration, campus custody assignment, inventory search, and shelf/bin indexer. |
+| **Module 3** | **Claim & Verification Service** | Anti-fraud verification engine, security evidence review, handover receipts, and audit trail. |
 
-> 💡 For a university group project, "Write" access is recommended. Avoid "Admin" unless necessary.
-
----
-
-## 🗄 MongoDB Integration (Future)
-
-When you are ready to add a real database:
-
-### 1. Install Mongoose
-
-```bash
-npm install mongoose
-```
-
-### 2. Add Connection String
-
-Create `.env.local`:
-```
-MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/campus-lost-and-found
-```
-
-### 3. Enable the Connection Helper
-
-Open `src/lib/mongodb.js` and uncomment the Mongoose code.
-
-### 4. Create API Routes
-
-Example for Found Items:
-- `src/app/api/found-items/route.js` — GET all, POST new
-- `src/app/api/found-items/[id]/route.js` — GET one, PUT update, DELETE
-
-### 5. Update Store Functions
-
-In `src/modules/found/store.js`, replace the in-memory functions with `fetch()` calls to your API routes.
+### Git Workflow Followed
+- **Feature Branching:** Teammates worked on isolated branches (`module-1-lost`, `module-2-found`, `module-3-claims`).
+- **Code Review:** Pull Requests reviewed and verified before squash-merging into `main`.
+- **Automated Deployments:** Every push to `main` triggered automatic verification and edge deployment on Vercel.
 
 ---
 
-## 📐 Contributing Guidelines
+## 📄 License & Academic Declaration
 
-1. **Work only on your module** — don't modify other teammates' pages.
-2. **Shared components** (`src/components/`) — discuss before modifying.
-3. **Write clean code** with comments for beginner readability.
-4. **Test before pushing** — run `npm run dev` and check your pages.
-5. **Use meaningful commit messages** following the convention above.
-6. **Never push `.env.local`** — it contains secrets.
-7. **Create Pull Requests** for all changes to `main`.
+This repository is developed for educational purposes as part of the academic curriculum at **Lovely Professional University (LPU)**.
 
----
-
-## 📄 License
-
-This project is created for educational purposes as part of a college group assignment.
-
----
-
-*Built with ❤️ using Next.js · React · Tailwind CSS · Node.js · MongoDB*
-
+- **License:** Open for academic, non-commercial, and educational demonstration purposes under the [MIT License](https://opensource.org/licenses/MIT).
+- **Authors:** Project Group P04
+- **Live Deployment:** [lost-and-found-campus-iota.vercel.app](https://lost-and-found-campus-iota.vercel.app/)
+- **Source Code:** [github.com/Sparsh88/lost-and-found-campus](https://github.com/Sparsh88/lost-and-found-campus)
