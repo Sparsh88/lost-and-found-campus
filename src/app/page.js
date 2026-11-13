@@ -134,7 +134,6 @@ export default async function HomePage() {
           src="/images/lpu-campus.jpg"
           alt="Lovely Professional University 600-Acre Campus"
           className="absolute inset-0 w-full h-full object-cover object-[center_60%] brightness-[0.92] contrast-[1.05]"
-          priority="true"
           loading="eager"
         />
         {/* Balanced overlay that shows the beautiful campus & university sign while giving crystal clear contrast for text */}
