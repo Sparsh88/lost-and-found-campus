@@ -187,9 +187,14 @@ export default function AdminDashboardPage() {
       })
     } catch {}
     const timer = setInterval(loadAdminNotifications, 6000)
+    const onCampusUpdate = () => loadAllData()
+    window.addEventListener('campusDataUpdated', onCampusUpdate)
+    window.addEventListener('focus', onCampusUpdate)
     return () => {
       if (es) es.close()
       clearInterval(timer)
+      window.removeEventListener('campusDataUpdated', onCampusUpdate)
+      window.removeEventListener('focus', onCampusUpdate)
     }
   }, [admin, loadAdminNotifications, loadAllData])
 

@@ -8,6 +8,7 @@ import { ClaimStudentResponseSchema, formatZodError } from '@/lib/validators'
 import { readFromGridFS } from '@/lib/uploads'
 import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -157,6 +158,8 @@ export async function PATCH(request, { params }) {
         foundItemId: foundItem._id.toString(),
       },
     })
+
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Additional evidence submitted for administrator review.',

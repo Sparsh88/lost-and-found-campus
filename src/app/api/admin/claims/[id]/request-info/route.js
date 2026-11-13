@@ -7,6 +7,7 @@ import FoundItem from '@/models/FoundItem'
 import { AdminRequestInfoSchema, formatZodError } from '@/lib/validators'
 import { createNotification } from '@/lib/notifications'
 import { recordAuditLog } from '@/lib/audit'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export async function POST(request, { params }) {
   try {
@@ -72,6 +73,8 @@ export async function POST(request, { params }) {
       details: `Requested additional info for claim ${claim.claimId}`,
       request,
     })
+
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Information request sent to claimant.',

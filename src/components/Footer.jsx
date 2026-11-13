@@ -12,12 +12,11 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-white font-semibold text-sm mb-3">Project Modules</h4>
-          <ul className="space-y-1 text-sm text-slate-400">
-            <li><Link href="/lost" className="hover:text-brightAzure transition">Module 1: Lost Item Service</Link></li>
-            <li><Link href="/found" className="hover:text-brightAzure transition">Module 2: Found Item Service</Link></li>
-            <li><Link href="/claims" className="hover:text-brightAzure transition">Module 3: Claim &amp; Verification</Link></li>
-            <li><Link href="/admin/login" className="hover:text-brightAzure transition">Staff Portal: Admin Login</Link></li>
+          <h4 className="text-white font-semibold text-sm mb-3">Quick Links</h4>
+          <ul className="space-y-1.5 text-sm text-slate-400">
+            <li><Link href="/lost" className="hover:text-brightAzure transition">Lost Items</Link></li>
+            <li><Link href="/found" className="hover:text-brightAzure transition">Found Items</Link></li>
+            <li><Link href="/admin/login" className="hover:text-brightAzure transition">Staff Portal &amp; Admin Desk</Link></li>
           </ul>
         </div>
 

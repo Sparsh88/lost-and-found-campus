@@ -48,6 +48,13 @@ export default function MyReportsPage() {
 
   useEffect(() => {
     loadMyActivity()
+    const handleUpdate = () => loadMyActivity()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [loadMyActivity])
 
   if (loading) {

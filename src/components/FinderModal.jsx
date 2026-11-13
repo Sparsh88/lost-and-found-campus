@@ -113,6 +113,7 @@ export default function FinderModal({ lostItem, isOpen, onClose, onSuccess }) {
 
       setSuccessMsg(data.message || 'Finder report sent privately to the owner!')
       window.dispatchEvent(new Event('notificationsUpdated'))
+      window.dispatchEvent(new Event('campusDataUpdated'))
       if (onSuccess) onSuccess(data)
       setTimeout(() => {
         onClose()

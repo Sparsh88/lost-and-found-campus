@@ -15,6 +15,13 @@ export default function FoundPage() {
 
   useEffect(() => {
     fetchItems()
+    const handleUpdate = () => fetchItems()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [])
 
   async function fetchItems() {

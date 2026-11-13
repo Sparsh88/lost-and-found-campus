@@ -75,6 +75,13 @@ function FoundItemDetailsContent() {
 
   useEffect(() => {
     loadItem()
+    const handleUpdate = () => loadItem()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [loadItem])
 
   async function handlePrivateUpload(file, purpose, setter) {
@@ -155,6 +162,8 @@ function FoundItemDetailsContent() {
 
       setClaimSuccess(data.message || 'Claim submitted successfully!')
       window.dispatchEvent(new Event('notificationsUpdated'))
+      window.dispatchEvent(new Event('campusDataUpdated'))
+      router.refresh()
       setTimeout(() => {
         setShowClaimModal(false)
         router.push('/claims')

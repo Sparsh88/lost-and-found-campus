@@ -8,6 +8,7 @@ import Notification from '@/models/Notification'
 import { AdminApproveClaimSchema, formatZodError } from '@/lib/validators'
 import { emitNotificationEvent } from '@/lib/notifications'
 import { recordAuditLog } from '@/lib/audit'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export async function POST(request, { params }) {
   let txSession = null
@@ -217,6 +218,8 @@ export async function POST(request, { params }) {
         id: notif._id.toString(),
       })
     }
+
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Claim approved! Competing claims closed and item reserved for handover.',

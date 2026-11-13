@@ -15,14 +15,20 @@ export default async function connectDB() {
     return cached.conn
   }
 
-  if (!cached.promise) {
+  if (!cached.promise || mongoose.connection.readyState === 0) {
+    cached.promise = null
+    cached.conn = null
     const opts = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
     }
 
-    cached.promise = mongoose.connect(uri, opts).catch((err) => {
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+      return mongooseInstance
+    }).catch((err) => {
       cached.promise = null
+      cached.conn = null
       throw err
     })
   }

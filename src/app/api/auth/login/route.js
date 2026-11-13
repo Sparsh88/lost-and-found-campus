@@ -8,7 +8,7 @@ import {
   STUDENT_COOKIE_NAME,
   isAdminRole,
 } from '@/lib/auth'
-import { LoginSchema, formatZodError } from '@/lib/validators'
+import { StudentLoginSchema, formatZodError } from '@/lib/validators'
 import { checkRateLimit } from '@/lib/rateLimit'
 
 export async function POST(request) {
@@ -25,29 +25,22 @@ export async function POST(request) {
     }
 
     const body = await request.json()
-    const validation = LoginSchema.safeParse(body)
+    const validation = StudentLoginSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json({ error: formatZodError(validation) }, { status: 400 })
     }
 
-    const { registrationNumber, identifier, email, password } = validation.data
-    const rawIdentifier = (registrationNumber || identifier || email || '').trim()
+    const cleanRegNo = validation.data.registrationNumber.toUpperCase().trim()
 
     await connectDB()
 
-    let user = null
-    if (rawIdentifier.includes('@')) {
-      user = await User.findOne({ email: rawIdentifier.toLowerCase() }).select('+passwordHash')
-    } else {
-      const cleanId = rawIdentifier.toUpperCase()
-      user = await User.findOne({
-        $or: [{ registrationNumber: cleanId }, { studentId: cleanId }],
-      }).select('+passwordHash')
-    }
+    const user = await User.findOne({
+      $or: [{ registrationNumber: cleanRegNo }, { studentId: cleanRegNo }],
+    }).select('+passwordHash')
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid university registration number or password.' },
+        { error: 'No student account found with this University Registration Number.' },
         { status: 401 }
       )
     }
@@ -59,10 +52,10 @@ export async function POST(request) {
       )
     }
 
-    const isMatch = await verifyPassword(password, user.passwordHash)
+    const isMatch = await verifyPassword(validation.data.password, user.passwordHash)
     if (!isMatch) {
       return NextResponse.json(
-        { error: 'Invalid university registration number or password.' },
+        { error: 'Incorrect password for this University Registration Number.' },
         { status: 401 }
       )
     }

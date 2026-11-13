@@ -27,6 +27,25 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setSuccess('')
+
+    const regNo = loginRegNumber.trim()
+    if (!regNo) {
+      setError('Please enter your University Registration Number.')
+      return
+    }
+
+    if (regNo.includes('@')) {
+      setError(
+        'Student login is based strictly on your University Registration Number (e.g. 12104582), not your email address.'
+      )
+      return
+    }
+
+    if (!loginPassword) {
+      setError('Please enter your account password.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -34,7 +53,7 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          registrationNumber: loginRegNumber.trim(),
+          registrationNumber: regNo,
           password: loginPassword,
         }),
       })
@@ -48,7 +67,9 @@ export default function LoginPage() {
       }
 
       window.dispatchEvent(new Event('authChange'))
+      window.dispatchEvent(new Event('campusDataUpdated'))
       setSuccess('Signed in successfully! Redirecting...')
+      router.refresh()
       setTimeout(() => {
         router.push('/found')
       }, 450)

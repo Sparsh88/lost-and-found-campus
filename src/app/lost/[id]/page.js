@@ -56,6 +56,13 @@ export default function LostItemDetailsPage() {
 
   useEffect(() => {
     loadItem()
+    const handleUpdate = () => loadItem()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [loadItem])
 
   async function handleOwnerSave(e) {
@@ -75,6 +82,8 @@ export default function LostItemDetailsPage() {
       } else {
         setActionMessage('Lost report updated successfully.')
         setIsEditing(false)
+        window.dispatchEvent(new Event('campusDataUpdated'))
+        router.refresh()
         await loadItem()
       }
     } catch {
@@ -98,6 +107,8 @@ export default function LostItemDetailsPage() {
         setActionError(data.error || 'Failed to update status.')
       } else {
         setActionMessage(`Report marked as ${newStatus}.`)
+        window.dispatchEvent(new Event('campusDataUpdated'))
+        router.refresh()
         await loadItem()
       }
     } catch {

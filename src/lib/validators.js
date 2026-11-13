@@ -41,6 +41,19 @@ export const AdminRegisterSchema = z.object({
   enrollmentKey: z.string().trim().optional().or(z.literal('')),
 })
 
+export const StudentLoginSchema = z.object({
+  registrationNumber: z
+    .string({ required_error: 'University Registration Number is required' })
+    .trim()
+    .min(3, 'University Registration Number must be at least 3 characters')
+    .max(40)
+    .refine(
+      (val) => !val.includes('@'),
+      'Please enter your University Registration Number, not your email address'
+    ),
+  password: z.string().min(1, 'Password is required'),
+})
+
 export const LoginSchema = z
   .object({
     registrationNumber: z.string().trim().optional(),

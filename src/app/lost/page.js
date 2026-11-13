@@ -37,6 +37,13 @@ export default function LostPage() {
 
   useEffect(() => {
     loadLostItems()
+    const handleUpdate = () => loadLostItems()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [loadLostItems])
 
   const filteredItems = items.filter((item) => {

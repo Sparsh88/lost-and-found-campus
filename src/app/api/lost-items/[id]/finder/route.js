@@ -15,6 +15,7 @@ import { generateUniqueCode } from '@/lib/idGenerator'
 import { checkRateLimit } from '@/lib/rateLimit'
 import { readFromGridFS } from '@/lib/uploads'
 import { createNotification, notifyAllAdmins } from '@/lib/notifications'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -194,6 +195,8 @@ export async function POST(request, { params }) {
         registrationNumber: submission.registrationNumber,
       },
     })
+
+    revalidateCampusData()
 
     return NextResponse.json(
       {

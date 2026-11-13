@@ -5,6 +5,7 @@ import LostItem from '@/models/LostItem'
 import { getAuthenticatedUser, requireUser, STUDENT_COOKIE_NAME } from '@/lib/auth'
 import { LostItemUpdateSchema, formatZodError } from '@/lib/validators'
 import { resolveItemImage } from '@/lib/itemImages'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -129,6 +130,7 @@ export async function PATCH(request, { params }) {
     )
 
     await item.save()
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Lost item report updated successfully.',
@@ -177,6 +179,7 @@ export async function DELETE(request, { params }) {
     }
 
     await LostItem.deleteOne({ _id: item._id })
+    revalidateCampusData()
     return NextResponse.json({ message: 'Lost item report deleted successfully.' })
   } catch (error) {
     console.error('Delete Lost Item Error:', error)

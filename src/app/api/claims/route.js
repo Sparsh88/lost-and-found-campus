@@ -10,6 +10,7 @@ import { checkRateLimit } from '@/lib/rateLimit'
 import { readFromGridFS } from '@/lib/uploads'
 import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -218,6 +219,8 @@ export async function POST(request) {
         registrationNumber: newClaim.registrationNumber,
       },
     })
+
+    revalidateCampusData()
 
     return NextResponse.json(
       {

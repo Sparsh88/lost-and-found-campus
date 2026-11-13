@@ -41,6 +41,13 @@ export default function ClaimsPage() {
 
   useEffect(() => {
     loadData()
+    const handleUpdate = () => loadData()
+    window.addEventListener('campusDataUpdated', handleUpdate)
+    window.addEventListener('focus', handleUpdate)
+    return () => {
+      window.removeEventListener('campusDataUpdated', handleUpdate)
+      window.removeEventListener('focus', handleUpdate)
+    }
   }, [loadData])
 
   async function handleResponseFileUpload(claimId, file) {
@@ -92,6 +99,7 @@ export default function ClaimsPage() {
         setFeedback('Additional evidence sent to campus administration.')
         setResponseMap((prev) => ({ ...prev, [claimId]: '' }))
         setResponseFileMap((prev) => ({ ...prev, [claimId]: null }))
+        window.dispatchEvent(new Event('campusDataUpdated'))
         await loadData()
       }
     } catch {
@@ -107,7 +115,7 @@ export default function ClaimsPage() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs bg-emerald-100 text-forestGreen border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold">
-              Module 3 · Private Claim Tracking
+              Private Claim Tracking
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-charcoal">

@@ -7,6 +7,7 @@ import FoundItem from '@/models/FoundItem'
 import { AdminRejectClaimSchema, formatZodError } from '@/lib/validators'
 import { createNotification } from '@/lib/notifications'
 import { recordAuditLog } from '@/lib/audit'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export async function POST(request, { params }) {
   try {
@@ -78,6 +79,8 @@ export async function POST(request, { params }) {
       details: `Rejected claim ${claim.claimId}. Reason: ${claim.rejectionReason}. Item remains ${foundItem?.status || 'AVAILABLE'}.`,
       request,
     })
+
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Claim rejected. Found item remains available for other valid claims.',

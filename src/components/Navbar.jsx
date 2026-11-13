@@ -39,8 +39,10 @@ export default function Navbar() {
     checkAuth()
     const onAuthChange = () => checkAuth()
     window.addEventListener('authChange', onAuthChange)
+    window.addEventListener('campusDataUpdated', onAuthChange)
     return () => {
       window.removeEventListener('authChange', onAuthChange)
+      window.removeEventListener('campusDataUpdated', onAuthChange)
     }
   }, [checkAuth, pathname])
 
@@ -124,10 +126,10 @@ export default function Navbar() {
     { name: 'Home', href: '/' },
     { name: 'Lost Items', href: '/lost' },
     { name: 'Found Items', href: '/found' },
-    { name: 'Claims & Verify', href: '/claims' },
   ]
 
   if (currentUser) {
+    links.push({ name: 'Claim & Verify', href: '/claims' })
     links.push({ name: 'My Reports', href: '/my-reports' })
   }
 

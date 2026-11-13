@@ -6,6 +6,7 @@ import Claim from '@/models/Claim'
 import { getAuthenticatedUser, requireUser, STUDENT_COOKIE_NAME } from '@/lib/auth'
 import { FoundItemUpdateSchema, formatZodError } from '@/lib/validators'
 import { resolveItemImage } from '@/lib/itemImages'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -155,6 +156,7 @@ export async function PATCH(request, { params }) {
     )
 
     await item.save()
+    revalidateCampusData()
 
     return NextResponse.json({
       message: 'Found item updated successfully.',
@@ -209,6 +211,7 @@ export async function DELETE(request, { params }) {
     }
 
     await FoundItem.deleteOne({ _id: item._id })
+    revalidateCampusData()
     return NextResponse.json({ message: 'Found item report deleted.' })
   } catch (error) {
     console.error('Delete Found Item Error:', error)

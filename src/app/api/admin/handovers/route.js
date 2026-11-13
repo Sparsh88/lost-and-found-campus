@@ -11,6 +11,7 @@ import { generateUniqueCode } from '@/lib/idGenerator'
 import { readFromGridFS } from '@/lib/uploads'
 import { emitNotificationEvent } from '@/lib/notifications'
 import { recordAuditLog } from '@/lib/audit'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -196,6 +197,8 @@ export async function POST(request) {
         id: notifToEmit._id.toString(),
       })
     }
+
+    revalidateCampusData()
 
     return NextResponse.json(
       {

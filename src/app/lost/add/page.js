@@ -108,6 +108,8 @@ export default function AddLostItemPage() {
         return
       }
 
+      window.dispatchEvent(new Event('campusDataUpdated'))
+      router.refresh()
       router.push(`/lost/${data.item.id}`)
     } catch {
       setError('Unable to reach server. Please try again.')

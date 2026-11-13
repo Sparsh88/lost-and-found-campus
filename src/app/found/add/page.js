@@ -100,6 +100,8 @@ export default function AddFoundItemPage() {
         return
       }
 
+      window.dispatchEvent(new Event('campusDataUpdated'))
+      router.refresh()
       router.push(`/found/${data.item.id}`)
     } catch {
       setError('Unable to reach server. Please try again.')

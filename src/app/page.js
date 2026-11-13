@@ -8,6 +8,8 @@ import StatusBadge from '@/components/ui/StatusBadge'
 import FoundItemCard from '@/components/ui/FoundItemCard'
 import { CAMPUS_LOCATIONS } from '@/lib/constants'
 import { resolveItemImage } from '@/lib/itemImages'
+import HomeHeroActions from '@/components/HomeHeroActions'
+import HomeServicesSection from '@/components/HomeServicesSection'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,23 +29,29 @@ async function getHomeData() {
     await connectDB()
 
     const [
-      activeLost,
-      totalLost,
-      availableFound,
-      returnedFound,
-      returnedLost,
+      lostStats,
+      foundStats,
       handoverCount,
-      totalFound,
       recentLostDocs,
       recentFoundDocs,
     ] = await Promise.all([
-      LostItem.countDocuments({ status: 'ACTIVE' }),
-      LostItem.countDocuments(),
-      FoundItem.countDocuments({ status: 'AVAILABLE' }),
-      FoundItem.countDocuments({ status: 'RETURNED' }),
-      LostItem.countDocuments({ status: 'RETURNED' }),
+      LostItem.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+      FoundItem.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 },
+          },
+        },
+      ]),
       Handover.countDocuments(),
-      FoundItem.countDocuments(),
       LostItem.find({ status: 'ACTIVE' })
         .select('reportId itemName category description lostDate lostLocation imageUrl status createdAt')
         .sort({ createdAt: -1 })
@@ -56,6 +64,24 @@ async function getHomeData() {
         .lean(),
     ])
 
+    const lostCounts = {}
+    let totalLost = 0
+    for (const s of lostStats) {
+      lostCounts[s._id] = s.count
+      totalLost += s.count
+    }
+
+    const foundCounts = {}
+    let totalFound = 0
+    for (const s of foundStats) {
+      foundCounts[s._id] = s.count
+      totalFound += s.count
+    }
+
+    const activeLost = lostCounts['ACTIVE'] || 0
+    const returnedLost = lostCounts['RETURNED'] || 0
+    const availableFound = foundCounts['AVAILABLE'] || 0
+    const returnedFound = foundCounts['RETURNED'] || 0
     const returnedItems = Math.max(handoverCount, returnedFound + returnedLost)
 
     return {
@@ -103,50 +129,34 @@ export default async function HomePage() {
   return (
     <div className="space-y-12 pb-12">
       {/* Hero Banner with LPU Campus Background */}
-      <section className="relative overflow-hidden min-h-[400px] sm:min-h-[460px] lg:min-h-[500px] flex items-center justify-center py-14 sm:py-20 px-4 text-center border-b border-lightGray bg-midnightNavy">
+      <section className="relative overflow-hidden min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-center justify-center py-14 sm:py-20 px-4 text-center border-b border-lightGray bg-midnightNavy">
         <img
           src="/images/lpu-campus.jpg"
           alt="Lovely Professional University 600-Acre Campus"
-          className="absolute inset-0 w-full h-full object-cover object-[center_62%]"
+          className="absolute inset-0 w-full h-full object-cover object-[center_60%] brightness-[0.92] contrast-[1.05]"
+          priority="true"
+          loading="eager"
         />
+        {/* Balanced overlay that shows the beautiful campus & university sign while giving crystal clear contrast for text */}
         <div
-          className="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-[#0B1F3A]/55 to-[#0B1F3A]/75"
+          className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-900/50 to-slate-950/75 backdrop-blur-[0.5px]"
           aria-hidden="true"
         />
 
-        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4 px-4 py-6 rounded-2xl bg-slate-900/40 backdrop-blur-sm border border-white/15 shadow-2xl">
           <span className="bg-white/95 text-charcoal text-xs sm:text-sm px-4 py-1.5 rounded-full font-semibold inline-block border border-white/80 shadow-md">
             Lovely Professional University · 600-Acre Campus System
           </span>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight [text-shadow:0_2px_14px_rgba(0,0,0,0.7)]">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight [text-shadow:0_2px_14px_rgba(0,0,0,0.85)]">
             Campus Lost &amp; Found
           </h1>
 
-          <p className="text-slate-100 text-base sm:text-lg max-w-2xl mx-auto font-medium [text-shadow:0_1px_10px_rgba(0,0,0,0.8)]">
+          <p className="text-slate-100 text-base sm:text-lg max-w-2xl mx-auto font-medium [text-shadow:0_1px_10px_rgba(0,0,0,0.9)]">
             Easily report lost items, register found belongings, and claim your missing items with campus security.
           </p>
 
-          <div className="flex flex-wrap gap-3 justify-center pt-3">
-            <Link
-              href="/lost"
-              className="bg-crimsonRed hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition shadow-lg ring-1 ring-white/25"
-            >
-              Lost Items
-            </Link>
-            <Link
-              href="/found"
-              className="bg-electricBlue hover:bg-electricBlue-hover text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition shadow-lg ring-1 ring-white/25"
-            >
-              Found Items
-            </Link>
-            <Link
-              href="/claims"
-              className="bg-forestGreen hover:bg-green-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition shadow-lg ring-1 ring-white/25"
-            >
-              Claim &amp; Verify
-            </Link>
-          </div>
+          <HomeHeroActions />
         </div>
       </section>
 
@@ -184,7 +194,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/claims"
+            href="/found"
             className="bg-softSand border border-lightGray rounded-xl p-5 shadow-sm hover:shadow-md transition"
           >
             <p className="text-xs font-semibold text-forestGreen uppercase tracking-wide">
@@ -399,68 +409,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Project Modules — Bottom Section Right Above Footer */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl font-bold text-charcoal text-center mb-6">
-          Project Modules
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-semibold text-crimsonRed bg-red-100/70 border border-red-200 px-2.5 py-1 rounded-md inline-block mb-3">
-                Module 1
-              </div>
-              <h3 className="text-lg font-bold text-charcoal mb-2">Lost Item Service</h3>
-              <p className="text-sm text-slateGray mb-4">
-                Students can report their lost belongings and search through existing lost-item reports.
-              </p>
-            </div>
-            <Link
-              href="/lost"
-              className="text-brightAzure hover:text-electricBlue font-semibold text-sm hover:underline"
-            >
-              Go to Lost Items →
-            </Link>
-          </div>
-
-          <div className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-semibold text-electricBlue bg-blue-100/70 border border-blue-200 px-2.5 py-1 rounded-md inline-block mb-3">
-                Module 2
-              </div>
-              <h3 className="text-lg font-bold text-charcoal mb-2">Found Item Service</h3>
-              <p className="text-sm text-slateGray mb-4">
-                Register items found on campus, filter by category or location, and track handover custody.
-              </p>
-            </div>
-            <Link
-              href="/found"
-              className="text-brightAzure hover:text-electricBlue font-semibold text-sm hover:underline"
-            >
-              Go to Found Items →
-            </Link>
-          </div>
-
-          <div className="bg-softSand p-6 rounded-xl border border-lightGray shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-semibold text-forestGreen bg-green-100/70 border border-green-200 px-2.5 py-1 rounded-md inline-block mb-3">
-                Module 3
-              </div>
-              <h3 className="text-lg font-bold text-charcoal mb-2">Claim &amp; Verification</h3>
-              <p className="text-sm text-slateGray mb-4">
-                Submit claims with ownership proof, verified by campus authorities before handover.
-              </p>
-            </div>
-            <Link
-              href="/claims"
-              className="text-brightAzure hover:text-electricBlue font-semibold text-sm hover:underline"
-            >
-              Go to Claims →
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Campus Services — Clean section right above footer */}
+      <HomeServicesSection />
     </div>
   )
 }

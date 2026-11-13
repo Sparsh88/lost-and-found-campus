@@ -6,6 +6,7 @@ import { FoundItemCreateSchema, formatZodError } from '@/lib/validators'
 import { generateUniqueCode } from '@/lib/idGenerator'
 import { resolveItemImage } from '@/lib/itemImages'
 import { notifyAllAdmins } from '@/lib/notifications'
+import { revalidateCampusData } from '@/lib/revalidate'
 
 export const dynamic = 'force-dynamic'
 
@@ -142,6 +143,8 @@ export async function POST(request) {
         finderRegistrationNumber: user.registrationNumber,
       },
     })
+
+    revalidateCampusData()
 
     return NextResponse.json(
       {
